@@ -1,0 +1,11 @@
+<RCC>
+<qresource prefix="/">
+  <file>tDrum_GreenTea.svg</file>
+  <file>tDrum_clear_drumtabpart_fire.svg</file>
+  <file>tDrum_copy_drumtabpart_doubleleaf.svg</file>
+  <file>tDrum_paste_drumtabpart_bean.svg</file>
+  <file>tDrum_createPdf_giveTree.svg</file>
+  <file>tDrum_openDirectory_tree.svg</file>
+  <file>tDrum_explicitImplicit_drumtabpart.svg</file>
+</qresource>
+</RCC>

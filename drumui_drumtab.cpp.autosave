@@ -1,0 +1,7 @@
+#include "drumui_drumtab.h"
+
+
+DrumTab::DrumTab(int horizontalPartsNumber,int verticalPartsNumber ,QWidget *parent) : QWidget(parent)
+{
+    
+}
