@@ -32,6 +32,7 @@ namespace Drum
          * This method reads the vector of Drum tab parts and returns a DrumTabPartRepetition
          * with this vector, and 1, as first abnd only pair. the booleans in the input are thus
          * not read.
+         * [input] drumRabParts_bool, vector of pair of DrumTabPart with its implicit(true)/explicit(false) flag
          */
         DrumTabPartRepetition
         getExplicit(const std::vector<std::pair<DrumTabPart*,bool>>& drumRabParts_bool) const;

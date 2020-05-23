@@ -24,7 +24,7 @@ namespace Drum {
         template<class...Args>
         static void drumAssert(bool condition, const std::string& mainMessage, Args... others)
         {
-            if (condition)
+            if (condition == false)
             {
                 Tools::StringFunction strFunc;
                 auto message =  strFunc.CFormatter(mainMessage,others...);
