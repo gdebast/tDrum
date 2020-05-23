@@ -22,6 +22,7 @@ DrumTabImpliciter::getImplicit(const std::vector<std::pair<Drum::DrumTabPart *, 
     for (auto it =  drumRabParts_bool.cbegin(); it != drumRabParts_bool.cend();)
     {
         Drum::DrumTabPart *currentDrumTabPart = it->first;
+        DrumTabPart& currentDrumTabPartRef = *currentDrumTabPart;
 
         // explicit/implicit flag
         // ----------------------
@@ -46,18 +47,40 @@ DrumTabImpliciter::getImplicit(const std::vector<std::pair<Drum::DrumTabPart *, 
             continue;
         }
 
+        // find the first occurence, backward
+        // ----------------------------------
+        unsigned index_currentTabToFollow(currentTabToFollow.size()-1);
+        bool found(false);
+        while (index_currentTabToFollow > 0 && found == false)
+        {
+            DrumTabPart& DrumTabPartIn_currentTabToFollow = *currentTabToFollow[index_currentTabToFollow];
+            bool identical = DrumTabPartIn_currentTabToFollow == currentDrumTabPartRef;
+            if(identical)
+            {
+                found = true;
+            }
+            else
+            {
+                index_currentTabToFollow--;
+            }
+        }
+        auto forwardIt = currentTabToFollow.end();
+        if(found && index_currentTabToFollow > 0)
+        {
+            forwardIt = currentTabToFollow.begin()+index_currentTabToFollow;
+        }
+
         // find the implicit and explicit part
         // -----------------------------------
         std::vector<Drum::DrumTabPart*> implicitPart{};
         std::list<Drum::DrumTabPart*> explicitPart{};
-        auto backwardIt = currentTabToFollow.rbegin();
         bool continueFlag(true);
-        while(backwardIt != currentTabToFollow.rend() &&
+        while(forwardIt != currentTabToFollow.end() &&
               continueFlag &&
               it != drumRabParts_bool.cend())
         {
 
-            DrumTabPart& previousPart = **backwardIt;
+            DrumTabPart& previousPart = **forwardIt;
             DrumTabPart& nextPart = *(it->first);
 
             // continue only if the part is flagged as implicit and is identical to the previous
@@ -68,7 +91,7 @@ DrumTabImpliciter::getImplicit(const std::vector<std::pair<Drum::DrumTabPart *, 
                 implicitPart.push_back(&nextPart);
                 explicitPart.push_front(&previousPart);
                 it++;
-                backwardIt++;
+                forwardIt++;
             }
 
 
