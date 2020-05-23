@@ -21,6 +21,18 @@ namespace Drum {
             return m_excpetionMessage.c_str();
         }
 
+        template<class...Args>
+        static void drumAssert(bool condition, const std::string& mainMessage, Args... others)
+        {
+            if (condition)
+            {
+                Tools::StringFunction strFunc;
+                auto message =  strFunc.CFormatter(mainMessage,others...);
+                throw DrumException(message);
+            }
+
+        }
+
     private:
         std::string m_excpetionMessage;
 

@@ -1,6 +1,9 @@
 #include "DrumAPI/drum_drumtabimpliciter.h"
 
 #include "DrumAPI/drum_drumtabpart.h"
+#include "DrumAPI/drum_drumexception.h"
+
+#include <list>
 
 using namespace Drum;
 
@@ -39,8 +42,59 @@ DrumTabImpliciter::getImplicit(const std::vector<std::pair<Drum::DrumTabPart *, 
             continue;
         }
 
-        // the drum tab part is implicit,
-        // we have to test that the previous parts are identical
+        //find the implicit and explicit part
+        std::vector<Drum::DrumTabPart*> implicitPart{};
+        std::list<Drum::DrumTabPart*> explicitPart{};
+        auto backwardIt = currentTabToFollow.rbegin();
+        bool isIdentical(true);
+        while(backwardIt != currentTabToFollow.rend() &&
+              isIdentical &&
+              it != drumRabParts_bool.cend())
+        {
+
+            DrumTabPart& previousPart = **backwardIt;
+            DrumTabPart& nextPart = *(it->first);
+
+            isIdentical = previousPart == nextPart;
+            if (isIdentical)
+            {
+
+                implicitPart.push_back(&nextPart);
+                explicitPart.push_front(&previousPart);
+                it++;
+                backwardIt++;
+            }
+
+
+        }
+
+        // assert
+        DrumException::drumAssert(implicitPart.size() != explicitPart.size(),
+                                  "Error from 'DrumTabImpliciter::getImplicit' : "
+                                  "the size of both explicit and implicit parts are different."
+                                  "Got {} and {}.",
+                                  std::to_string(implicitPart.size()),
+                                  std::to_string(explicitPart.size()));
+
+
+
+        // treat the explicit and implicit part
+        if (implicitPart.size() == 0) // an empty implicit part means that we have to
+                                      // put the current part in the current parts to follow
+        {
+            currentTabToFollow.push_back(it->first);
+            continue;
+        }
+        else if (explicitPart.size() == currentTabToFollow.size()) // if both part to follow and explicit are indentical (checked by the size)
+                                                                   // we can simply add 1 to the number of implicit
+        {
+            currentTabToFollowRepetition++;
+        }
+        else // otherwise it means that we have to cut the current Tab to follow
+        {
+            // TODO
+        }
+
 
     }
 
