@@ -19,7 +19,7 @@ DrumTabImpliciter::getImplicit(const std::vector<std::pair<Drum::DrumTabPart *, 
     std::vector<Drum::DrumTabPart*> currentTabToFollow{};
     unsigned currentTabToFollowRepetition(1);
 
-    for (auto it =  drumRabParts_bool.cbegin(); it != drumRabParts_bool.cend(); it++)
+    for (auto it =  drumRabParts_bool.cbegin(); it != drumRabParts_bool.cend();)
     {
         Drum::DrumTabPart *currentDrumTabPart = it->first;
 
@@ -33,15 +33,16 @@ DrumTabImpliciter::getImplicit(const std::vector<std::pair<Drum::DrumTabPart *, 
             // we have to save it to the returned vector
             if (currentTabToFollowRepetition > 1 && currentTabToFollow.empty() == false)
             {
-                returnedImplicitTab.push_back(std::make_pair(currentTabToFollow,currentTabToFollowRepetition));
+                returnedImplicitTab.push_back(std::make_pair(std::move(currentTabToFollow),currentTabToFollowRepetition));
 
                 // prepare for the next
-                currentTabToFollow.clear();
+                currentTabToFollow = {};
                 currentTabToFollowRepetition = 1;
 
             }
 
             currentTabToFollow.push_back(currentDrumTabPart);
+            it++;
             continue;
         }
 
@@ -93,8 +94,10 @@ DrumTabImpliciter::getImplicit(const std::vector<std::pair<Drum::DrumTabPart *, 
         // ------------------------------------
         if (implicitPart.size() == 0) // an empty implicit part means that we have to
                                       // put the current part in the current parts to follow
+                                      // because the impliciter did not find a repetition.
         {
             currentTabToFollow.push_back(it->first);
+            it++;
         }
         else if (explicitPart.size() == currentTabToFollow.size()) // if both part to follow and explicit are indentical (checked by the size)
                                                                    // we can simply add 1 to the number of implicit
@@ -124,7 +127,7 @@ DrumTabImpliciter::getImplicit(const std::vector<std::pair<Drum::DrumTabPart *, 
             returnedImplicitTab.push_back(std::make_pair(std::move(firstTabToFollow),currentTabToFollowRepetition));
 
             currentTabToFollow = std::move(secondTabToFollow);
-            currentTabToFollowRepetition = 1;
+            currentTabToFollowRepetition = 2;
 
         }
 

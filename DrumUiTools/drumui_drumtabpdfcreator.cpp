@@ -2,6 +2,7 @@
 
 #include "DrumAPI/drum_drumtab.h"
 #include "DrumAPI/drum_drumtabpart.h"
+#include "DrumAPI/drum_drumtabimpliciter.h"
 #include "DrumUiTools/drumui_drumtabpartgeometry.h"
 #include "DrumUiTools/drumui_drumtabpartdrawerhelper.h"
 #include "DrumUiTools/drumui_drumtabpartdrawer.h"
@@ -66,11 +67,23 @@ void DrumTabPdfCreator::createPdf()
     // paint the icon
     drawIcon(QIcon(":/tDrum_GreenTea.svg"),tDrumIconSquare,painter);
 
+    // create the impliciter to get an explicit or implicit tab
+    Drum::DrumTabImpliciter impliciter;
+    Drum::DrumTabImpliciter::DrumTabPartRepetition tabToPrint;
+    if (m_drumTabPdfPrinterConfig.isDrumTabPrintingExplicit())
+    {
+        tabToPrint = impliciter.getExplicit(m_drumTab.getDrumTabParts());
+    }
+    else
+    {
+        tabToPrint = impliciter.getImplicit(m_drumTab.getDrumTabParts());
+    }
+
+
     // loop on the drum tab
     unsigned index_drumTabPart(0);
     unsigned rowNr(0);
     bool createNewPage(false);
-
     for (const auto& drumTabPartImplicitPair : m_drumTab.getDrumTabParts())
     {
         auto* drumTabPart = drumTabPartImplicitPair.first;
