@@ -31,7 +31,23 @@ namespace DrumUI
         void createPdf();
     private:
 
+        /**
+         * @brief draw an icon given as first argument in the area and using the painter.
+         * @param icon, icon to draw
+         * @param drawingArea, rectangle where to draw the Icon
+         * @param painter, painter used to draw the icon.
+         */
         void drawIcon(const QIcon& icon, const QRect& drawingArea, QPainter& painter) const;
+
+        /**
+         * @brief draw a rectangle which indicates an implicit repetition.
+         *        The rectangle indicates that a number of identical parts
+         *        of the drum tab should be repeated and the part size.
+         * @param drawingArea, rectangle where to draw
+         * @param identicalPartNumber, number of time the part is repeated
+         * @param repetitionSize, size of the repeated part
+         */
+        void drawRepetition(const QRect& drawingArea, unsigned identicalPartNumber, unsigned partSize);
 
         const Drum::DrumTab&                 m_drumTab;
         const Drum::DrumTabPdfPrinterConfig& m_drumTabPdfPrinterConfig;
