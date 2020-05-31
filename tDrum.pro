@@ -2,6 +2,8 @@ QT       += core gui widgets printsupport
 
 RESOURCES += Icons/icons.qrc
 
+CONFIG += c++17
+
 HEADERS += \
     DrumAPI/drum_drumkithorizontallinehelper.h \
     DrumAPI/drum_drumtabimpliciter.h \

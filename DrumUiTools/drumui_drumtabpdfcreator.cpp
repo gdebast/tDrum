@@ -84,7 +84,7 @@ void DrumTabPdfCreator::createPdf()
     unsigned index_drumTabPart(0);
     unsigned rowNr(0);
     bool createNewPage(false);
-    for (const auto& drumTabPartImplicitPair : m_drumTab.getDrumTabParts())
+    for (const auto& [drumTabPart,isImplicit] : m_drumTab.getDrumTabParts())
     {
 
         // trigger to create a new page
@@ -95,8 +95,6 @@ void DrumTabPdfCreator::createPdf()
             createNewPage = false;
         }
 
-
-        auto* drumTabPart = drumTabPartImplicitPair.first;
 
         unsigned columNr = index_drumTabPart%NUMBEROFCOLUMN;
 

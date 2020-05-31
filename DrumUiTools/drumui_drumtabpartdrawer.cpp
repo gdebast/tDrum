@@ -33,6 +33,23 @@ void DrumTabPartDrawer::DrawDrumTabPart(const DrumTabPartDrawerHelper &helper) c
 
 }
 
+void DrumTabPartDrawer::drawRepetion(const DrumTabPartDrawerHelper &helper,
+                                     QPainter &painter,
+                                     unsigned identicalPartNumber,
+                                     unsigned partSize)
+{
+    painter.setPen(Qt::black);
+    painter.setBrush(Qt::black);
+
+    // draw the big-rectangle
+    painter.drawRect(helper.getDrumTabPartHorizontalLine(Drum::DrumKitHorizontalLine::HiHatLine));
+    painter.drawRect(helper.getDrumTabPartHorizontalLine(Drum::DrumKitHorizontalLine::BassDrumLine));
+    painter.drawRect(helper.getDrumTabPartVerticalLine());
+    painter.drawRect(helper.getDrumTabPartVerticalLine(true));
+
+    // TODO: draw inner-rectangles (# = identicalPartNumber) with the number of repeted parts (partSize)
+}
+
 // ===============================
 // == private drawing functions ==
 // ===============================
