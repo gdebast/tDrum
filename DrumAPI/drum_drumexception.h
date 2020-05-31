@@ -33,6 +33,15 @@ namespace Drum {
 
         }
 
+        static void drumAssert(bool condition, const std::string& message)
+        {
+            if (condition == false)
+            {
+                throw DrumException(message);
+            }
+
+        }
+
     private:
         std::string m_excpetionMessage;
 

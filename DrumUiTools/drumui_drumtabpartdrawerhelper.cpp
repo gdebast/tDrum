@@ -170,11 +170,8 @@ std::vector<Drum::DrumKit> DrumTabPartDrawerHelper::getDrumKits(int x, int y) co
          break;
      }
 
-     if(assertAsked)
-     {
-         throw Drum::DrumException("Error from DrumTabPartDrawerHelper::getDrumTabPartHorizontalLine: "
-                                   "requested a line impossible to draw");
-     }
+     Drum::DrumException::drumAssert(assertAsked == false,"Error from DrumTabPartDrawerHelper::getDrumTabPartHorizontalLine: "
+                                                          "requested a line impossible to draw");
 
      return QRect(x,y,width,height);
 

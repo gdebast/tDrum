@@ -37,6 +37,20 @@ namespace DrumUI
             void DrawDrumTabPart(const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
             void DrawDrumTabPart(const DrumTabPartDrawerHelper& helper) const;
 
+            /**
+             * @brief draw a rectangle which indicates an implicit repetition.
+             *        The rectangle indicates that a number of identical parts
+             *        of the drum tab should be repeated and the part size.
+             * @param helper, the object helping to draw by giving the drawing area
+             * @param painter, QPainter used to draw the shapes
+             * @param identicalPartNumber, number of time the part is repeated
+             * @param repetitionSize, size of the repeated part
+             */
+            void drawRepetion(const DrumTabPartDrawerHelper& helper,
+                              QPainter& painter,
+                              unsigned identicalPartNumber,
+                              unsigned partSize);
+
         private:
 
             // drawing functions
