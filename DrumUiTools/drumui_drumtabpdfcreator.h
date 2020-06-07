@@ -31,14 +31,6 @@ namespace DrumUI
         void createPdf();
     private:
 
-        /**
-         * @brief draw an icon given as first argument in the area and using the painter.
-         * @param icon, icon to draw
-         * @param drawingArea, rectangle where to draw the Icon
-         * @param painter, painter used to draw the icon.
-         */
-        void drawIcon(const QIcon& icon, const QRect& drawingArea, QPainter& painter) const;
-
         const Drum::DrumTab&                 m_drumTab;
         const Drum::DrumTabPdfPrinterConfig& m_drumTabPdfPrinterConfig;
     };

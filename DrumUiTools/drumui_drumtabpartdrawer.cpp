@@ -52,10 +52,11 @@ void DrumTabPartDrawer::drawRepetion(const QRect& drawingArea,
 
     // draw inner-rectangles (# = identicalPartNumber)
     unsigned totalWidth = rightRect.right() - leftRect.left();
+    unsigned leftRectStart(leftRect.x());
     for(unsigned line(1); line < identicalPartNumber;line++)
     {
         double width_ratio = static_cast<double>(line)/static_cast<double>(identicalPartNumber);
-        unsigned verticalLineCenter = width_ratio*totalWidth;
+        unsigned verticalLineCenter = leftRectStart + width_ratio*totalWidth;
         leftRect.moveTo(verticalLineCenter-static_cast<double>(leftRect.width())/2.0,leftRect.y());
         painter.drawRect(leftRect);
     }
