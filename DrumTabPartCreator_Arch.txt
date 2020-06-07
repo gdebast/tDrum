@@ -1,11 +1,11 @@
 2. explicit/implicit printing option in drum tab menu
-	modify the printer
+	draw something around the main repeated part
 
-3. draw silence in drum tab 
+3. multiple drum tab edition
 
-4. change drumTabPart time in Creator
+4. draw silence in drum tab 
 
-5. multiple drum tab edition
+5. change drumTabPart time in Creator
 
 6. play the written song
 

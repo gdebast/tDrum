@@ -4,6 +4,10 @@
 #include <QPushButton>
 #include <QCheckBox>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QComboBox>
+#include <QLabel>
+#include <QStandardItemModel>
 
 namespace  UI
 {
@@ -41,6 +45,10 @@ namespace  DrumUI
             UI::DirectoryLineEdit* m_directoryLineEdit{nullptr};
             QPushButton*           m_qPushButton_ok{nullptr};
             QVBoxLayout*           m_mainLayout{nullptr};
+            QHBoxLayout*           m_NumberOfPartPerRowLayout{nullptr};
+            QComboBox*             m_qComboBox_NumberOfPartPerRow{nullptr};
+            QLabel*                m_qLabel_NumberOfPartPerRow{nullptr};
+            QStandardItemModel*    m_qStandardItemModel_NumberOfPartPerRow{nullptr};
 
 
     };

@@ -40,14 +40,13 @@ void DrumTabPdfCreator::createPdf()
     QPainter painter(&pdfwriter);
 
     // constant for the drawing
-    const unsigned NUMBEROFCOLUMN(4);
     const double   LEFTRIGHTMARGIN_COLUMN_RATIO(0.5); //left and right margin/column size
     const double   UPPPERBOTTOMMARGIN_ROW_RATIO(1.0); // upper and bottom margin/row size
 
     // page manager
     PdfPageManager pdfPageManager(pdfwriter,
                                   painter,
-                                  NUMBEROFCOLUMN,
+                                  m_drumTabPdfPrinterConfig.getNumberOfDrumTabPartsPerRow(),
                                   LEFTRIGHTMARGIN_COLUMN_RATIO,
                                   UPPPERBOTTOMMARGIN_ROW_RATIO);
 

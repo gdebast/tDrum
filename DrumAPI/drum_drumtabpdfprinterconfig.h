@@ -16,8 +16,11 @@ namespace Drum
             // getter and setters
             bool isDrumTabPrintingExplicit() const {return m_explicitDrumTabPrinting;}
             std::string getPdfExportDirectory() const {return m_pdfExportDirectory;}
+            unsigned getNumberOfDrumTabPartsPerRow() const {return m_numberOfDrumTabPartsPerRow;}
             void setExplicitDrumTabPrinting(bool explicitPrinting){m_explicitDrumTabPrinting = explicitPrinting;};
             void setPdfExportDirector(const std::string& directory){m_pdfExportDirectory = directory;};
+            void setNumberOfDrumTabPartsPerRow(unsigned numberOfDrumTabPartsPerRow){m_numberOfDrumTabPartsPerRow = numberOfDrumTabPartsPerRow;};
+
 
             // serialization method
             void fillFromSerialized(const std::string &serializedString);
@@ -26,6 +29,7 @@ namespace Drum
         private:
             bool        m_explicitDrumTabPrinting{true};
             std::string m_pdfExportDirectory{""};
+            unsigned    m_numberOfDrumTabPartsPerRow{4};
 
     };
 }
