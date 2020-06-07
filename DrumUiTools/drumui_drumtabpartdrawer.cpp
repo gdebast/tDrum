@@ -6,39 +6,41 @@
 using namespace DrumUI;
 
 
-DrumTabPartDrawer::DrumTabPartDrawer(QPaintDevice &deviceToPaint,
-                                     Drum::DrumTabPart &drumTabPart) :
-    m_deviceToPaint(deviceToPaint),
-    m_drumTabPart(drumTabPart)
+DrumTabPartDrawer::DrumTabPartDrawer(QPaintDevice &deviceToPaint) :
+    m_deviceToPaint(deviceToPaint)
 {
 }
 
-void DrumTabPartDrawer::DrawDrumTabPart(const DrumTabPartDrawerHelper &helper,
+void DrumTabPartDrawer::DrawDrumTabPart(Drum::DrumTabPart& drumTabPart,
+                                        const DrumTabPartDrawerHelper &helper,
                                         QPainter &painter) const
 {
     // draw lines
     drawTabLines(helper,painter);
 
     // draw the drum kits
-    drawDrumKits(helper,painter);
+    drawDrumKits(drumTabPart,helper,painter);
 
     // draw the horizontal lines linking the kits
-    drawDrumLines(helper,painter);
+    drawDrumLines(drumTabPart,helper,painter);
 }
 
-void DrumTabPartDrawer::DrawDrumTabPart(const DrumTabPartDrawerHelper &helper) const
+void DrumTabPartDrawer::DrawDrumTabPart(Drum::DrumTabPart& drumTabPart,
+                                        const DrumTabPartDrawerHelper &helper) const
 {
     QPainter commonPainter(&m_deviceToPaint);
-    DrawDrumTabPart(helper,commonPainter);
+    DrawDrumTabPart(drumTabPart,helper,commonPainter);
 
 }
 
-void DrumTabPartDrawer::drawRepetion(const DrumTabPartDrawerHelper &helper,
+void DrumTabPartDrawer::drawRepetion(const QRect& drawingArea,
                                      QPainter &painter,
                                      unsigned identicalPartNumber)
 {
     painter.setPen(Qt::black);
     painter.setBrush(Qt::black);
+
+    DrumTabPartDrawerHelper helper(drawingArea,0); // create an empty helper
 
     // draw the big-rectangle
     auto leftRect  = helper.getDrumTabPartVerticalLine(true);
@@ -82,11 +84,12 @@ void DrumTabPartDrawer::drawTabLines(const DrumTabPartDrawerHelper &helper,
 
 }
 
-void DrumTabPartDrawer::drawDrumKits(const DrumTabPartDrawerHelper &helper,
+void DrumTabPartDrawer::drawDrumKits(const Drum::DrumTabPart& drumTabPart,
+                                     const DrumTabPartDrawerHelper &helper,
                                      QPainter& painter) const
 {
 
-    auto allDrumKitPosition = m_drumTabPart.getDrumKits();
+    auto allDrumKitPosition = drumTabPart.getDrumKits();
     for(auto kitPosition : allDrumKitPosition)
     {
         // get the position of this drum kit in the DrumTabPart
@@ -360,7 +363,8 @@ void DrumTabPartDrawer::drawDrumKit(Drum::DrumKit drumKit,
 
 }
 
-void DrumTabPartDrawer::drawDrumLines(const DrumTabPartDrawerHelper &helper,
+void DrumTabPartDrawer::drawDrumLines(Drum::DrumTabPart& drumTabPart,
+                                      const DrumTabPartDrawerHelper &helper,
                                       QPainter& painter) const
 {
 
@@ -368,7 +372,7 @@ void DrumTabPartDrawer::drawDrumLines(const DrumTabPartDrawerHelper &helper,
     painter.setPen(Qt::black);
     painter.setBrush(Qt::black);
 
-    auto drumLineQRects = helper.getDrumLine(m_drumTabPart.getDrumLines());
+    auto drumLineQRects = helper.getDrumLine(drumTabPart.getDrumLines());
 
     for(const auto& Rect : drumLineQRects)
     {

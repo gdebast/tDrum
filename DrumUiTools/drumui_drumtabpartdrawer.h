@@ -26,26 +26,28 @@ namespace DrumUI
          */
 
         public:
-            explicit DrumTabPartDrawer(QPaintDevice& deviceToPaint,
-                                       Drum::DrumTabPart& drumTabPart);
+            explicit DrumTabPartDrawer(QPaintDevice& deviceToPaint);
             DrumTabPartDrawer(const DrumTabPartDrawer&) = delete;
             DrumTabPartDrawer(DrumTabPartDrawer&&) = delete;
             DrumTabPartDrawer& operator=(const DrumTabPartDrawer&) = delete;
             DrumTabPartDrawer() = delete;
             ~DrumTabPartDrawer() = default;
 
-            void DrawDrumTabPart(const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
-            void DrawDrumTabPart(const DrumTabPartDrawerHelper& helper) const;
+            void DrawDrumTabPart(Drum::DrumTabPart& drumTabPart,
+                                 const DrumTabPartDrawerHelper& helper,
+                                 QPainter& painter) const;
+            void DrawDrumTabPart(Drum::DrumTabPart& drumTabPart,
+                                 const DrumTabPartDrawerHelper& helper) const;
 
             /**
              * @brief draw a rectangle which indicates an implicit repetition.
              *        The rectangle indicates that a number of identical parts
              *        of the drum tab should be repeated and the part size.
-             * @param helper, the object helping to draw by giving the drawing area
+             * @param drawingArea, drawing area
              * @param painter, QPainter used to draw the shapes
              * @param identicalPartNumber, number of time the part is repeated
              */
-            void drawRepetion(const DrumTabPartDrawerHelper& helper,
+            void drawRepetion(const QRect& drawingArea,
                               QPainter& painter,
                               unsigned identicalPartNumber);
 
@@ -53,7 +55,7 @@ namespace DrumUI
 
             // drawing functions
             void drawTabLines(const DrumTabPartDrawerHelper &helper, QPainter& painter) const;
-            void drawDrumKits(const DrumTabPartDrawerHelper &helper, QPainter& painter) const;
+            void drawDrumKits(const Drum::DrumTabPart& drumTabPart, const DrumTabPartDrawerHelper &helper, QPainter& painter) const;
             void drawDrumKit(Drum::DrumKit drumKit, const QRect &rectWhereToDraw,const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
             void drawCymbal(int xCenter, int line, const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
             void drawCircledCymbal(int xCenter, int line, const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
@@ -64,11 +66,10 @@ namespace DrumUI
             void drawUnderscoredBell(int xCenter, int line, const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
             void drawBottomLine(int xCenter, int line, const DrumTabPartDrawerHelper& helper, QPainter& painter, bool shift = true) const;
             void drawUpperLine(int xCenter, int line, const DrumTabPartDrawerHelper& helper, QPainter& painter, bool shift = true) const;
-            void drawDrumLines(const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
+            void drawDrumLines(Drum::DrumTabPart& drumTabPart, const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
 
             // members
             QPaintDevice&      m_deviceToPaint;
-            Drum::DrumTabPart& m_drumTabPart; // non-const because it can be modified when asking the drum lines
 
     };
 

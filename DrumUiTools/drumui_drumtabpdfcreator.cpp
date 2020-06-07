@@ -108,8 +108,8 @@ void DrumTabPdfCreator::createPdf()
                 QRect drawingArea(xCorner,yCorner,columnSize,rowSize);
                 //drawing helper
                 DrumTabPartDrawerHelper helper(drawingArea,drumTabPart->getDrumTime());
-                DrumTabPartDrawer drawer(pdfwriter,*drumTabPart);
-                drawer.DrawDrumTabPart(helper,painter);
+                DrumTabPartDrawer drawer(pdfwriter);
+                drawer.DrawDrumTabPart(*drumTabPart,helper,painter);
 
                 index_drumTabPart++;
 

@@ -98,7 +98,7 @@ void DrumTabPartWidgetBase::paintEvent(QPaintEvent* e)
                                         m_drumTabPartModel ? m_drumTabPartModel->getDrumTime() : 0);
 
 
-    DrumTabPartDrawer drawer(*this, *m_drumTabPartModel);
-    drawer.DrawDrumTabPart(m_drumTabPartDrawerHelper);
+    DrumTabPartDrawer drawer(*this);
+    drawer.DrawDrumTabPart(*m_drumTabPartModel,m_drumTabPartDrawerHelper);
 
 }
