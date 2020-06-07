@@ -44,12 +44,10 @@ namespace DrumUI
              * @param helper, the object helping to draw by giving the drawing area
              * @param painter, QPainter used to draw the shapes
              * @param identicalPartNumber, number of time the part is repeated
-             * @param repetitionSize, size of the repeated part
              */
             void drawRepetion(const DrumTabPartDrawerHelper& helper,
                               QPainter& painter,
-                              unsigned identicalPartNumber,
-                              unsigned partSize);
+                              unsigned identicalPartNumber);
 
         private:
 

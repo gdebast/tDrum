@@ -35,19 +35,28 @@ void DrumTabPartDrawer::DrawDrumTabPart(const DrumTabPartDrawerHelper &helper) c
 
 void DrumTabPartDrawer::drawRepetion(const DrumTabPartDrawerHelper &helper,
                                      QPainter &painter,
-                                     unsigned identicalPartNumber,
-                                     unsigned partSize)
+                                     unsigned identicalPartNumber)
 {
     painter.setPen(Qt::black);
     painter.setBrush(Qt::black);
 
     // draw the big-rectangle
+    auto leftRect  = helper.getDrumTabPartVerticalLine(true);
+    auto rightRect = helper.getDrumTabPartVerticalLine();
     painter.drawRect(helper.getDrumTabPartHorizontalLine(Drum::DrumKitHorizontalLine::HiHatLine));
     painter.drawRect(helper.getDrumTabPartHorizontalLine(Drum::DrumKitHorizontalLine::BassDrumLine));
-    painter.drawRect(helper.getDrumTabPartVerticalLine());
-    painter.drawRect(helper.getDrumTabPartVerticalLine(true));
+    painter.drawRect(leftRect);
+    painter.drawRect(rightRect);
 
-    // TODO: draw inner-rectangles (# = identicalPartNumber) with the number of repeted parts (partSize)
+    // draw inner-rectangles (# = identicalPartNumber)
+    unsigned totalWidth = rightRect.right() - leftRect.left();
+    for(unsigned line(1); line < identicalPartNumber;line++)
+    {
+        double width_ratio = static_cast<double>(line)/static_cast<double>(identicalPartNumber);
+        unsigned verticalLineCenter = width_ratio*totalWidth;
+        leftRect.moveTo(verticalLineCenter-static_cast<double>(leftRect.width())/2.0,leftRect.y());
+        painter.drawRect(leftRect);
+    }
 }
 
 // ===============================

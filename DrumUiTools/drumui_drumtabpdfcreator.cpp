@@ -25,19 +25,17 @@ DrumTabPdfCreator::DrumTabPdfCreator(const Drum::DrumTab& drumTab,
 void DrumTabPdfCreator::createPdf()
 {
     // create the pdf name
-    std::string fullPath =   m_drumTabPdfPrinterConfig.getPdfExportDirectory() + "tDrum_"
-                           + m_drumTab.getAuthor() + "_"
-                           + m_drumTab.getTitle()  + ".pdf";
+    std::string fileName =  "tDrum_"+ m_drumTab.getAuthor() + "_" + m_drumTab.getTitle()  + ".pdf";
+    fileName.erase(std::remove(fileName.begin(),
+                               fileName.end(),
+                               ' '),
+                               fileName.end());
+    std::string fullPath =   m_drumTabPdfPrinterConfig.getPdfExportDirectory() + fileName;
+
     // trimming
-    fullPath.erase(std::remove(fullPath.begin(),
-                               fullPath.end(),
-                                            ' '),
-                               fullPath.end());
-    const QString filename(fullPath.c_str());
+    const QString qStringfullPath(fullPath.c_str());
 
-
-
-    QPdfWriter pdfwriter(filename);
+    QPdfWriter pdfwriter(qStringfullPath);
     pdfwriter.setPageSize(QPageSize(QPageSize::A4));
     QPainter painter(&pdfwriter);
 
@@ -84,45 +82,53 @@ void DrumTabPdfCreator::createPdf()
     unsigned index_drumTabPart(0);
     unsigned rowNr(0);
     bool createNewPage(false);
-    for (const auto& [drumTabPart,isImplicit] : m_drumTab.getDrumTabParts())
+    for (const auto& [drumTabParts,repetitionNumber] : tabToPrint)
     {
 
-        // trigger to create a new page
-        if (createNewPage)
+        for (unsigned rep(1); rep <= repetitionNumber; rep++)
         {
-            pdfwriter.newPage();
-            drawIcon(QIcon(":/tDrum_GreenTea.svg"),tDrumIconSquare, painter);
-            createNewPage = false;
-        }
 
-
-        unsigned columNr = index_drumTabPart%NUMBEROFCOLUMN;
-
-        unsigned xCorner = leftRightMarginSize + columNr*columnSize;
-        unsigned yCorner = upperBottomMarginSize + rowNr*rowSize;
-
-        //drawing Area
-        QRect drawingArea(xCorner,yCorner,columnSize,rowSize);
-        //drawing helper
-        DrumTabPartDrawerHelper helper(drawingArea,drumTabPart->getDrumTime());
-        DrumTabPartDrawer drawer(pdfwriter,*drumTabPart);
-        drawer.DrawDrumTabPart(helper,painter);
-
-        index_drumTabPart++;
-
-        // compute the row. We only change row if the next column number is zero
-        if (index_drumTabPart%NUMBEROFCOLUMN == 0)
-        {
-            rowNr++;
-            // we create a new page if the current number of row (rowNr+1)
-            // makes the total size larger than the pdf height.
-            if (2*upperBottomMarginSize + (rowNr+1)*rowSize > pdfYSize)
+            for (auto* drumTabPart : drumTabParts)
             {
-                rowNr = 0;
-                // send a trigger to create a new page such that only
-                // a new row creates it
-                createNewPage = true;
+                // trigger to create a new page
+                if (createNewPage)
+                {
+                    pdfwriter.newPage();
+                    drawIcon(QIcon(":/tDrum_GreenTea.svg"),tDrumIconSquare, painter);
+                    createNewPage = false;
+                }
+
+
+                unsigned columNr = index_drumTabPart%NUMBEROFCOLUMN;
+
+                unsigned xCorner = leftRightMarginSize + columNr*columnSize;
+                unsigned yCorner = upperBottomMarginSize + rowNr*rowSize;
+
+                //drawing Area
+                QRect drawingArea(xCorner,yCorner,columnSize,rowSize);
+                //drawing helper
+                DrumTabPartDrawerHelper helper(drawingArea,drumTabPart->getDrumTime());
+                DrumTabPartDrawer drawer(pdfwriter,*drumTabPart);
+                drawer.DrawDrumTabPart(helper,painter);
+
+                index_drumTabPart++;
+
+                // compute the row. We only change row if the next column number is zero
+                if (index_drumTabPart%NUMBEROFCOLUMN == 0)
+                {
+                    rowNr++;
+                    // we create a new page if the current number of row (rowNr+1)
+                    // makes the total size larger than the pdf height.
+                    if (2*upperBottomMarginSize + (rowNr+1)*rowSize > pdfYSize)
+                    {
+                        rowNr = 0;
+                        // send a trigger to create a new page such that only
+                        // a new row creates it
+                        createNewPage = true;
+                    }
+                }
             }
+
         }
 
     }
