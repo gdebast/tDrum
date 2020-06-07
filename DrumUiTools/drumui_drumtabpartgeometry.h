@@ -44,6 +44,7 @@ namespace DrumUI {
         int getVertivalLineBottomEnd() const;
         int getCymbalXThickness() const;
         int getCymbalYThickness() const;
+        int getRepetitionMarkerWidth() const;
 
     private:
         // constant
@@ -55,6 +56,7 @@ namespace DrumUI {
         static const int BASEHEIGHT{120};
         static const int BASEWIDTH{220};
         static const int WIDTHRXRATIO{20};
+        static const int DRUMKITSIZE_REPETITIONMARKER_RATIO{2}; // ratio between the size of a drumkit and the size of a repetition marker
 
         // member
         int m_width;
@@ -76,6 +78,8 @@ namespace DrumUI {
         //  end of the drum kit vertical lines
         int m_verticalLineUpperEnd;
         int m_vertivalLineBottomEnd;
+        // repetition triangle width
+        int m_repetitionMarkerWidth;
 
     };
 

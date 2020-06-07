@@ -30,7 +30,7 @@ namespace DrumUI
             DrumTabPartDrawer(const DrumTabPartDrawer&) = delete;
             DrumTabPartDrawer(DrumTabPartDrawer&&) = delete;
             DrumTabPartDrawer& operator=(const DrumTabPartDrawer&) = delete;
-            DrumTabPartDrawer() = delete;
+            DrumTabPartDrawer& operator=(DrumTabPartDrawer&&) = delete;
             ~DrumTabPartDrawer() = default;
 
             void DrawDrumTabPart(Drum::DrumTabPart& drumTabPart,
@@ -50,6 +50,18 @@ namespace DrumUI
             void drawRepetion(const QRect& drawingArea,
                               QPainter& painter,
                               unsigned identicalPartNumber);
+
+            /**
+             * @brief add a mark to the right or the left of the drawing area.
+             *        This marks the main repetition.
+             * @param drawingArea, rectangle where to draw left or right
+             * @param painter, QPainter used to draw the shapes
+             * @param isEndOfRepetition, bool indicating if the mark should be on the left (false) or the right (true)
+             */
+            void markRepeatedPart(const QRect& drawingArea,
+                                  QPainter& painter,
+                                  bool isEndOfRepetition);
+
 
         private:
 

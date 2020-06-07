@@ -68,18 +68,32 @@ void DrumTabPdfCreator::createPdf()
     DrumTabPartDrawer drawer(pdfwriter);
     for (const auto& [drumTabParts,repetitionNumber] : tabToPrint)
     {
+        unsigned index_drumTabPart(0);
+        bool repetitionNeeded = repetitionNumber >= 2;
 
         for (auto* drumTabPart : drumTabParts)
         {
+            index_drumTabPart++;
+
             //drawing Area
             QRect drawingArea = pdfPageManager.getDrawingArea();
             //drawing helper
             DrumTabPartDrawerHelper helper(drawingArea,drumTabPart->getDrumTime());
             drawer.DrawDrumTabPart(*drumTabPart,helper,painter);
 
+            // mark the main repeated part
+            if(index_drumTabPart == 1 && repetitionNeeded)
+            {
+                drawer.markRepeatedPart(drawingArea,painter,false);
+            }
+            if(repetitionNeeded && index_drumTabPart == drumTabParts.size())
+            {
+                drawer.markRepeatedPart(drawingArea,painter,true);
+            }
+
         }
 
-        if(repetitionNumber >= 2)
+        if(repetitionNeeded == true)
         {
             //drawing Area
             QRect drawingArea = pdfPageManager.getDrawingArea();

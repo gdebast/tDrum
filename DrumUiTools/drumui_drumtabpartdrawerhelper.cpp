@@ -234,6 +234,32 @@ std::vector<Drum::DrumKit> DrumTabPartDrawerHelper::getDrumKits(int x, int y) co
      return drumLineQRects;
  }
 
+ QPolygon DrumTabPartDrawerHelper::getRepetitionMarker(bool isRepetitionEnd)
+ {
+     unsigned repWidth = m_drumTabPartGeometry.getRepetitionMarkerWidth();
+     QPolygon polygon(3);
+     QRect topLine = getDrumTabPartHorizontalLine(Drum::DrumKitHorizontalLine::HiHatLine);
+     QRect middleLine = getDrumTabPartHorizontalLine(Drum::DrumKitHorizontalLine::SnareTomLine);
+     QRect bottomLine = getDrumTabPartHorizontalLine(Drum::DrumKitHorizontalLine::BassDrumLine);
+
+     // marker at the start of the drawing area
+     if (isRepetitionEnd == false)
+     {
+         polygon.setPoint(0, m_drawingAreaQRect.left(),          topLine.top());
+         polygon.setPoint(1, m_drawingAreaQRect.left()+repWidth, middleLine.top());
+         polygon.setPoint(2, m_drawingAreaQRect.left(),          bottomLine.bottom());
+     }
+     // marker at the end of the drawing area
+     else
+     {
+         polygon.setPoint(0,m_drawingAreaQRect.right(),          topLine.top());
+         polygon.setPoint(1,m_drawingAreaQRect.right()-repWidth, middleLine.top());
+         polygon.setPoint(2,m_drawingAreaQRect.right(),          bottomLine.bottom());
+     }
+
+     return polygon;
+ }
+
 void DrumTabPartDrawerHelper::recompute(const QRect& drawingArea,
                                                 int maxPosition)
 {

@@ -39,7 +39,6 @@ void DrumTabPartDrawer::drawRepetion(const QRect& drawingArea,
 {
     painter.setPen(Qt::black);
     painter.setBrush(Qt::black);
-
     DrumTabPartDrawerHelper helper(drawingArea,0); // create an empty helper
 
     // draw the big-rectangle
@@ -60,6 +59,21 @@ void DrumTabPartDrawer::drawRepetion(const QRect& drawingArea,
         leftRect.moveTo(verticalLineCenter-static_cast<double>(leftRect.width())/2.0,leftRect.y());
         painter.drawRect(leftRect);
     }
+}
+
+void DrumTabPartDrawer::markRepeatedPart(const QRect &drawingArea,
+                                         QPainter &painter,
+                                         bool isEndOfRepetition)
+{
+    painter.setPen(Qt::black);
+    painter.setBrush(Qt::black);
+    DrumTabPartDrawerHelper helper(drawingArea,0); // create an empty helper
+
+    // draw the shape which is given by the helper (as always)
+    painter.drawPolygon(helper.getRepetitionMarker(isEndOfRepetition));
+
+
+
 }
 
 // ===============================

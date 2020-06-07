@@ -75,6 +75,10 @@ void DrumTabPartGeometry::recompute(int width, int height)
     // vertical line ends
     m_verticalLineUpperEnd  = m_height/VOIDSRATIO/VOIDSENDLINERATIO;
     m_vertivalLineBottomEnd = m_height - m_verticalLineUpperEnd;
+
+    // compute the width of the repetition marker
+    m_repetitionMarkerWidth = m_drumKitXsize/DRUMKITSIZE_REPETITIONMARKER_RATIO;
+
 }
 
 int DrumTabPartGeometry::getHeight() const
@@ -160,6 +164,11 @@ int DrumTabPartGeometry::getVertivalLineBottomEnd() const
 int DrumTabPartGeometry::getCymbalYThickness() const
 {
     return m_cymbalYThickness;
+}
+
+int DrumTabPartGeometry::getRepetitionMarkerWidth() const
+{
+    return m_repetitionMarkerWidth;
 }
 
 int DrumTabPartGeometry::getCymbalXThickness() const

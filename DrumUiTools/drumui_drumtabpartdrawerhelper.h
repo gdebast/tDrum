@@ -6,6 +6,7 @@
 #include "DrumUiTools/drumui_drumtabpartgeometry.h"
 
 #include <QRect>
+#include <QPolygon>
 
 #include <vector>
 #include <tuple>
@@ -35,7 +36,7 @@ namespace DrumUI {
         DrumTabPartDrawerHelper(const DrumTabPartDrawerHelper&) = delete;
         DrumTabPartDrawerHelper(DrumTabPartDrawerHelper&&) = delete;
         DrumTabPartDrawerHelper& operator=(const DrumTabPartDrawerHelper&) = delete;
-        DrumTabPartDrawerHelper() = delete;
+        DrumTabPartDrawerHelper& operator=(DrumTabPartDrawerHelper&&) = delete;
 
         ~DrumTabPartDrawerHelper() = default;
 
@@ -66,6 +67,11 @@ namespace DrumUI {
         // 4. DrumLine QRect
         // -----------------
         std::vector<QRect> getDrumLine(const std::vector<Drum::DrumLine*>& drumLines) const;
+
+        // 5. repetion shape getter
+        // ------------------------
+        // returns the shape of the repetion of the left (false) or on the right (true)
+        QPolygon getRepetitionMarker(bool isRepetitionEnd);
 
 
         // recompute method will recreate the entire vector
