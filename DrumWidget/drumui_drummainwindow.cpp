@@ -38,13 +38,22 @@ DrumMainWindow::~DrumMainWindow() = default;
 
 void DrumMainWindow::createWidget()
 {
+    // directory Manager
+    m_directoryManager = std::make_unique<Tools::DirectoryManager>();
+    const auto &workingDirectory = m_directoryManager->getWorkingDirectory();
+
     // factories
-    m_drumTabFactory = std::make_unique<Drum::DrumTabFactory>();
-    auto& drumTab = m_drumTabFactory->loadObject("D:/Development/Cpp/tDrum/default.drum");
-    m_drumTabPartFactory = std::make_unique<Drum::DrumTabPartFactory>();
-    auto& drumtabPart = m_drumTabPartFactory->loadObject("D:/Development/Cpp/tDrum/default.drumpart");
-    m_drumTabPdfPrinterConfigFactory = std::make_unique<Drum::DrumTabPdfPrinterConfigFactory>();
-    auto& drumTabPdfPrinterConfig = m_drumTabPdfPrinterConfigFactory->loadObject("D:/Development/Cpp/tDrum/default.pdfconfig");
+    m_drumTabFactory = std::make_unique<Drum::DrumTabFactory>(workingDirectory);
+    m_drumTabFactory->loadDirectory();
+    auto& drumTab = m_drumTabFactory->getOneObject();
+
+    m_drumTabPartFactory = std::make_unique<Drum::DrumTabPartFactory>(workingDirectory);
+    m_drumTabPartFactory->loadDirectory();
+    auto& drumtabPart = m_drumTabPartFactory->getOneObject();
+
+    m_drumTabPdfPrinterConfigFactory = std::make_unique<Drum::DrumTabPdfPrinterConfigFactory>(workingDirectory);
+    m_drumTabPdfPrinterConfigFactory->loadDirectory();
+    auto& drumTabPdfPrinterConfig = m_drumTabPdfPrinterConfigFactory->getOneObject();
 
     // widgets
     m_mainWidget = new QWidget(this);

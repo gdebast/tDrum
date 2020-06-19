@@ -1,58 +1,33 @@
-#include "DrumAPI/drum_drumtab.h"
 #include "DrumAPI/drum_drumtabfactory.h"
+
 #include "DrumAPI/drum_drumexception.h"
 
 #include "fstream"
 
 using namespace Drum;
 
-DrumTabFactory::DrumTabFactory()
-{}
+DrumTabFactory::DrumTabFactory(const Tools::Directory &workingDirectory) :
+    IDrumFactory<DrumTab>("drum", workingDirectory) {}
 
 DrumTabFactory::~DrumTabFactory() = default;
 
 
-DrumTab& DrumTabFactory::loadObject(const std::string& file)
+DrumTab &DrumTabFactory::getOneObject()
 {
-
-    // prepare the reading
-    std::ifstream fileStream(file.c_str());
-
-    DrumException::drumAssert(static_cast<bool>(fileStream),
-                              "Error from 'DrumTabFactory::loadDrumTab': '{}' cannot be read.",
-                              file);
-
-    // returned drumtab
-    auto returnedDrumTab = std::make_unique<DrumTab>();
-
-    // read line per line
-    std::string currentLine;
-    std::string cumulativeLine;
-    while (std::getline(fileStream,currentLine))
+    // if one exists; return it
+    if (m_AllCreatedObjects.size() > 0)
     {
-
-        cumulativeLine += currentLine;
+        return *m_AllCreatedObjects[0].first.get();
     }
 
-    returnedDrumTab->fillFromSerialized(cumulativeLine);
-
-    m_AllCreatedDrumTab.push_back(std::make_pair(std::move(returnedDrumTab),file));
-    return *(*m_AllCreatedDrumTab.rbegin()).first.get();
-}
-
-void DrumTabFactory::dumpToFile() const
-{
-
-    for(const auto& tabFilePair : m_AllCreatedDrumTab)
+    // otherwise, create an empty drum tab
+    auto returnedObject = std::make_unique<DrumTab>();
+    for (unsigned i(0); i < 4; i++)
     {
-        auto& tab = tabFilePair.first;
-        std::string serialized = tab->getSerialized();
-
-        std::ofstream flow(tabFilePair.second);
-        if(flow)
-        {
-            flow << serialized;
-            flow.close();
-        }
+        returnedObject->addDrumTabPart(i);
     }
+
+    m_AllCreatedObjects.push_back(std::make_pair(std::move(returnedObject),getDefaultFile()));
+    return *(*m_AllCreatedObjects.rbegin()).first.get();
+
 }

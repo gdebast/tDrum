@@ -13,6 +13,7 @@ HEADERS += \
     DrumAPI/drum_drumtabimpliciter.h \
     DrumAPI/drum_drumtabpdfprinterconfig.h \
     DrumAPI/drum_drumtabpdfprinterconfigfactory.h \
+    DrumAPI/drum_idrumfactory.h \
     DrumEnum/drum_drumkithorizontalline.h \
     DrumAPI/drum_drumexception.h \
     DrumEnum/drum_drumkit.h \
@@ -54,6 +55,7 @@ SOURCES += \
     DrumAPI/drum_drumtabpartfactory.cpp \
     DrumAPI/drum_drumtabpdfprinterconfig.cpp \
     DrumAPI/drum_drumtabpdfprinterconfigfactory.cpp \
+    DrumAPI/drum_idrumfactory.cpp \
     DrumUiTools/drumui_drumtabpartdrawer.cpp \
     DrumUiTools/drumui_drumtabpartdrawerhelper.cpp \
     DrumUiTools/drumui_drumtabpdfcreator.cpp \

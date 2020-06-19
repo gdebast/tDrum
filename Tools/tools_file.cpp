@@ -1,4 +1,5 @@
 #include "Tools/tools_file.h"
+#include "Tools/tools_directory.h"
 
 using namespace Tools;
 
@@ -21,4 +22,9 @@ File::File(const std::string &fileNameExtension,
     }
     m_fileExtension = cumulativeStr;
 
+}
+
+std::string File::getFullPath() const
+{
+    return m_parentDirectory.getDirectoryPath() + "/" + m_fileName + "." + m_fileExtension;
 }

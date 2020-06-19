@@ -30,15 +30,15 @@ namespace Drum {
 
         // constructor/destructor
         explicit DrumTabPart();
-        explicit DrumTabPart(const std::string& file);
         explicit DrumTabPart(const DrumTabPart& other);
         ~DrumTabPart();
 
         // method
         // ------
         int getDrumTime() const;
+
         std::string getSerialized() const;
-        std::string getSaveFileLocation() const;
+
         // return the drumKits at a position, at a line. it can be Silence
         DrumKit getDrumKit(DrumKitHorizontalLine line, unsigned position) const;
 
@@ -55,7 +55,7 @@ namespace Drum {
         void clearLineAtPosition(DrumKitHorizontalLine line, unsigned position);
 
         void fillSerializer(Tools::SerializerHelper& helper) const;
-        void fillFromSerialized(const Tools::SerializerHelper &helper);
+        void fillFromSerialized(const std::string &serializedString);
 
         bool isEmpty() const {return m_drumKitPositions.empty();}
 
@@ -72,9 +72,6 @@ namespace Drum {
 
         std::vector<DrumLine*>      m_drumLines{};
         bool                        m_isDrumLinesUptoDate{false};
-
-        std::string                 m_saveFileLocation{""};
-        bool                        m_hasSaveFile{false};
 
         static const std::vector<std::pair<DrumKit,std::string>> s_stringDrumkitTranslation;
 

@@ -1,34 +1,27 @@
 #pragma once
 
-#include <memory>
-#include <vector>
+#include "DrumAPI/drum_drumtabpart.h"
+#include "DrumAPI/drum_idrumfactory.h"
+
 #include <string>
 
 namespace Drum {
-
-
-    class DrumTabPart;
 
     /*
      * class responsible for creating, saving, and importing
      * the standalone DrumTabParts
      */
-
-    class DrumTabPartFactory
+    class DrumTabPartFactory final : public IDrumFactory<DrumTabPart>
     {
     public:
-        explicit DrumTabPartFactory();
+        explicit DrumTabPartFactory(const Tools::Directory &workingDirectory);
         DrumTabPartFactory(const DrumTabPartFactory&) = delete;
         DrumTabPartFactory(DrumTabPartFactory&&) = delete;
         DrumTabPartFactory& operator=(const DrumTabPartFactory&) = delete;
         DrumTabPartFactory& operator=(DrumTabPartFactory&&) = delete;
         ~DrumTabPartFactory();
 
-        DrumTabPart& loadObject(const std::string& file);
-        void dumpToFile() const;
-
-    private:
-        std::vector<std::unique_ptr<DrumTabPart>> m_AllCreatedDrumTabPart;
+        DrumTabPart &getOneObject() final;
 
 
     };

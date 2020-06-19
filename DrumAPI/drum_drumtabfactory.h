@@ -1,36 +1,29 @@
-#ifndef DRUM_DRUMTABFACTORY_H
-#define DRUM_DRUMTABFACTORY_H
+#pragma once
 
-#include <memory>
-#include <vector>
+#include "DrumAPI/drum_idrumfactory.h"
+#include "DrumAPI/drum_drumtab.h"
+
 #include <string>
-
 
 namespace Drum {
 
-    class DrumTab;
-
-    /*
+/*
      * class responsible for creating, saving, and importing the DrumTab
      */
 
-    class DrumTabFactory
+    class DrumTabFactory final : public IDrumFactory<DrumTab>
     {
     public:
-        explicit DrumTabFactory();
+        explicit DrumTabFactory(const Tools::Directory &workingDirectory);
         ~DrumTabFactory();
         DrumTabFactory(const DrumTabFactory&) = delete;
         DrumTabFactory(DrumTabFactory&&) = delete;
         DrumTabFactory& operator=(const DrumTabFactory&) = delete;
         DrumTabFactory& operator=(DrumTabFactory&&) = delete;
 
-        DrumTab& loadObject(const std::string& file);
-        void dumpToFile() const;
+        DrumTab &getOneObject() final;
 
-    private:
-        std::vector<std::pair<std::unique_ptr<DrumTab>,std::string>> m_AllCreatedDrumTab;
 
     };
 }
 
-#endif // DRUM_DRUMTABFACTORY_H

@@ -1,55 +1,29 @@
 #include "DrumAPI/drum_drumtabpdfprinterconfigfactory.h"
 
-#include "DrumAPI/drum_drumtabpdfprinterconfig.h"
 #include "DrumAPI/drum_drumexception.h"
 
-#include "fstream"
 
 using namespace Drum;
 
-DrumTabPdfPrinterConfigFactory::DrumTabPdfPrinterConfigFactory()
+DrumTabPdfPrinterConfigFactory::DrumTabPdfPrinterConfigFactory(const Tools::Directory &workingDirectory) :
+    IDrumFactory<DrumTabPdfPrinterConfig>("pdfconfig",workingDirectory) {}
+
+
+DrumTabPdfPrinterConfig &DrumTabPdfPrinterConfigFactory::getOneObject()
 {
-
-}
-
-DrumTabPdfPrinterConfig &DrumTabPdfPrinterConfigFactory::loadObject(const std::string &file)
-{
-    // prepare the reading
-    std::ifstream fileStream(file.c_str());
-    DrumException::drumAssert(static_cast<bool>(fileStream),
-                              "Error from 'DrumTabPdfPrinterConfigFactory::loadDrumTab': '{}' cannot be read.",
-                              file);
-
-    // returned drumtab
-    auto createdDrumTabPdfPrinterConfig = std::make_unique<DrumTabPdfPrinterConfig>();
-
-    // read line per line
-    std::string cumulativeLine;
-    std::string currentLine;
-    while (std::getline(fileStream,currentLine))
+    // if one exists; return it
+    if (m_AllCreatedObjects.size() > 0)
     {
-        cumulativeLine += currentLine;
+        return *m_AllCreatedObjects[0].first.get();
     }
-    createdDrumTabPdfPrinterConfig->fillFromSerialized(cumulativeLine);
 
-    m_allCreatedObjects.push_back(std::make_pair(move(createdDrumTabPdfPrinterConfig),file));
-    auto & result = *(*m_allCreatedObjects.rbegin()).first.get();
-    return result;
-}
+    // otherwise, create an empty drum tab
+    auto returnedObject = std::make_unique<DrumTabPdfPrinterConfig>();
 
-void DrumTabPdfPrinterConfigFactory::dumpToFile() const
-{
-    for(const auto& object : m_allCreatedObjects)
-    {
-        std::string serialized = object.first->getSerialized();
-        std::ofstream flow(object.second.c_str());
 
-        if(flow)
-        {
-            flow << serialized;
-            flow.close();
-        }
-    }
+    m_AllCreatedObjects.push_back(std::make_pair(std::move(returnedObject),getDefaultFile()));
+    return *(*m_AllCreatedObjects.rbegin()).first.get();
+
 }
 
 DrumTabPdfPrinterConfigFactory::~DrumTabPdfPrinterConfigFactory() = default;

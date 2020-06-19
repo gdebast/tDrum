@@ -207,7 +207,7 @@ void DrumTab::fillFromSerialized(const std::string &serializedString)
 
         // create a new drum tab part by finding the sub helper with the part
         auto newPart = new DrumTabPart();
-        newPart->fillFromSerialized(currentDrumTabPartLinkHelper.getSubSerializerHelper(PART));
+        newPart->fillFromSerialized(currentDrumTabPartLinkHelper.getSubSerializerHelper(PART).getSerializedString());
 
         // get if it is implicit or not
         bool isImplicit(false);

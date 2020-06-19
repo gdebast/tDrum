@@ -1,35 +1,26 @@
 #pragma once
 
-#include <vector>
-#include <memory>
-#include <utility>
+#include "DrumAPI/drum_idrumfactory.h"
+#include "DrumAPI/drum_drumtabpdfprinterconfig.h"
+
 #include <string>
 
 namespace Drum
 {
-    class DrumTabPdfPrinterConfig;
-}
-
-namespace Drum
-{
-    class DrumTabPdfPrinterConfigFactory
+    class DrumTabPdfPrinterConfigFactory : public IDrumFactory<DrumTabPdfPrinterConfig>
     /*
      * class responsible for loading, owning and saving DrumTabPdfPrinterConfig
      */
     {
         public:
-            DrumTabPdfPrinterConfigFactory();
+            DrumTabPdfPrinterConfigFactory(const Tools::Directory &workingDirectory);
             DrumTabPdfPrinterConfigFactory(const DrumTabPdfPrinterConfigFactory&) = delete;
             DrumTabPdfPrinterConfigFactory(DrumTabPdfPrinterConfigFactory&&) = delete;
             DrumTabPdfPrinterConfigFactory& operator=(const DrumTabPdfPrinterConfigFactory&) = delete;
             DrumTabPdfPrinterConfigFactory& operator=(DrumTabPdfPrinterConfigFactory&&) = delete;
             ~DrumTabPdfPrinterConfigFactory();
 
-            DrumTabPdfPrinterConfig& loadObject(const std::string& file);
-            void dumpToFile() const;
-
-        private:
-            std::vector<std::pair<std::unique_ptr<DrumTabPdfPrinterConfig>,std::string>> m_allCreatedObjects;
+            DrumTabPdfPrinterConfig &getOneObject() final;
 
     };
 }

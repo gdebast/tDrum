@@ -28,20 +28,12 @@ DrumTabPart::DrumTabPart()
 {
 }
 
-DrumTabPart::DrumTabPart(const std::string &file):
-    m_saveFileLocation(file),
-    m_hasSaveFile(true)
-{
-}
-
 DrumTabPart::DrumTabPart(const DrumTabPart& other)
 {
     m_drumKitPositions = other.m_drumKitPositions;
     m_drumTime = other.m_drumTime;
     m_isDrumLinesUptoDate = false; // false such that a call to getDrumLines is triggered
     m_drumLines = {};
-    m_saveFileLocation = ""; // a in-memory copy does not have a file
-    m_hasSaveFile = false;
 }
 
 DrumTabPart::~DrumTabPart()
@@ -168,16 +160,6 @@ std::string DrumTabPart::getSerialized() const
     return helper.getSerializedString();
 }
 
-std::string DrumTabPart::getSaveFileLocation() const
-{
-    if(m_hasSaveFile == false)
-    {
-        throw DrumException("Error from 'DrumTabPart::getSaveFileLocation': this drum tab part has no file location where to save it");
-    }
-
-    return m_saveFileLocation;
-}
-
 DrumKit DrumTabPart::getDrumKit(DrumKitHorizontalLine line, unsigned position) const
 {
     if (line == DrumKitHorizontalLine::None)
@@ -270,8 +252,9 @@ void DrumTabPart::fillSerializer(Tools::SerializerHelper &helper) const
     }
 }
 
-void DrumTabPart::fillFromSerialized(const SerializerHelper &helper)
+void DrumTabPart::fillFromSerialized(const std::string &serializedString)
 {
+    Tools::SerializerHelper helper(serializedString);
     helper.deserialize(TIME,m_drumTime);
 
     if (helper.isSerializerHelper(DRUMKITS) == false)

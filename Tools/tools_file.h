@@ -24,6 +24,8 @@ namespace Tools
             std::string getFileName() const {return m_fileName;}
             std::string getFileExtension() const {return m_fileExtension;}
 
+            std::string getFullPath() const;
+
 
         private:
             std::string m_fileName{""};
