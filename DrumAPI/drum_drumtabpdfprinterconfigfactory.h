@@ -25,7 +25,7 @@ namespace Drum
             DrumTabPdfPrinterConfigFactory& operator=(DrumTabPdfPrinterConfigFactory&&) = delete;
             ~DrumTabPdfPrinterConfigFactory();
 
-            DrumTabPdfPrinterConfig& loadFromFile(const std::string& file);
+            DrumTabPdfPrinterConfig& loadObject(const std::string& file);
             void dumpToFile() const;
 
         private:

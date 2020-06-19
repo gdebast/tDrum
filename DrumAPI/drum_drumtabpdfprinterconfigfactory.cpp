@@ -12,23 +12,21 @@ DrumTabPdfPrinterConfigFactory::DrumTabPdfPrinterConfigFactory()
 
 }
 
-DrumTabPdfPrinterConfig &DrumTabPdfPrinterConfigFactory::loadFromFile(const std::string &file)
+DrumTabPdfPrinterConfig &DrumTabPdfPrinterConfigFactory::loadObject(const std::string &file)
 {
     // prepare the reading
-    std::ifstream fileStrean(file.c_str());
-    std::string currentLine;
-    if(!fileStrean)
-    {
-        throw DrumException("Error from 'DrumTabFactory::loadDrumTab': '" + file +
-                            "' cannot be read.");
-    }
+    std::ifstream fileStream(file.c_str());
+    DrumException::drumAssert(static_cast<bool>(fileStream),
+                              "Error from 'DrumTabPdfPrinterConfigFactory::loadDrumTab': '{}' cannot be read.",
+                              file);
 
     // returned drumtab
     auto createdDrumTabPdfPrinterConfig = std::make_unique<DrumTabPdfPrinterConfig>();
 
     // read line per line
     std::string cumulativeLine;
-    while (std::getline(fileStrean,currentLine))
+    std::string currentLine;
+    while (std::getline(fileStream,currentLine))
     {
         cumulativeLine += currentLine;
     }

@@ -28,9 +28,9 @@ namespace DrumUI {
     {
         Q_OBJECT
     public:
-        explicit DrumTabWidget(int columnNumber, Drum::DrumTab* drumTabModel, QWidget *parent = nullptr);
+        explicit DrumTabWidget(int columnNumber, Drum::DrumTab& drumTabModel, QWidget *parent = nullptr);
 
-        Drum::DrumTab* getDrumTab() const {return m_drumTabModel;}
+        void setDrumTab(Drum::DrumTab& drumTabModel);
 
     signals:
         void menuCopyPressed(const Drum::DrumTabPart& copiedDrumTabPart);
@@ -54,7 +54,17 @@ namespace DrumUI {
 
         void removeDrumTabPartWidget(DrumTabPartDisplayWidget* widget);
         std::pair<int,int> getDrumTabPartWidgetRowColumn(DrumTabPartDisplayWidget* widget) const; // (row,column)
+
+        /*
+         * method filling the layout with the drum tab part widgets.
+         */
         void updateGridlayout();
+
+        /*
+         * method responsible for creating Drum tab part widget with the model DrumTab.
+         * m_DrumTabPartWidget is thus filled and also pre-emptied.
+         */
+        void createWidgetsWithModel();
 
         // model
         Drum::DrumTab*                    m_drumTabModel;

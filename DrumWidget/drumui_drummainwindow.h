@@ -9,6 +9,10 @@
 #include <QSpacerItem>
 #include <memory>
 
+namespace Tools
+{
+    class DirectoryManager;
+}
 
 
 namespace DrumUI
@@ -48,6 +52,7 @@ namespace DrumUI
         DrumTabPartCreatorWidget                  *m_drumTabPartCreatorWidget{nullptr};
         DrumMainToolBar                           *m_drumMainToolBar{nullptr};
 
+        std::unique_ptr<Tools::DirectoryManager>               m_directoryManager;
         std::unique_ptr<Drum::DrumTabFactory>                  m_drumTabFactory;
         std::unique_ptr<Drum::DrumTabPartFactory>              m_drumTabPartFactory;
         std::unique_ptr<Drum::DrumTabPdfPrinterConfigFactory>  m_drumTabPdfPrinterConfigFactory;

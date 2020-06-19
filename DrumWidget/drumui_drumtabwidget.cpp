@@ -14,52 +14,38 @@ using namespace DrumUI;
 // =================
 
 DrumTabWidget::DrumTabWidget(int columnNumber ,
-                             Drum::DrumTab* modelDrumTab,
+                             Drum::DrumTab& modelDrumTab,
                              QWidget *parent) :
     QScrollArea(parent),
 
-    m_drumTabModel(modelDrumTab),
+    m_drumTabModel(&modelDrumTab),
     m_columnNr(columnNumber)
 {
-
-    m_lineNr = static_cast<int>(std::ceil(static_cast<float>(m_drumTabModel->getDrumTabSize())/m_columnNr));
 
     // create a matrix of DrumTabPartWidget
     m_drumTabWidgetInScrollingArea = new QWidget(); // main widget containing the parts
     m_mainGridLayout = new QGridLayout(); // matrix-layout of the main widget
     m_drumTabWidgetInScrollingArea->setLayout(m_mainGridLayout);
     m_mainGridLayout->setHorizontalSpacing(0);
-
-    auto drumTabPartsImplicit = m_drumTabModel->getDrumTabParts();
-    unsigned index_drumTabParts(0);
-
-    for (int line =0; line < m_lineNr; line++)
-    {
-        for (int column=0; column < m_columnNr; column++)
-        {
-
-            Drum::DrumTabPart* DrumTabPart{nullptr};
-            bool implicitDrawing(false);
-            if(index_drumTabParts < drumTabPartsImplicit.size())
-            {
-                DrumTabPart = drumTabPartsImplicit[index_drumTabParts].first;
-                implicitDrawing = drumTabPartsImplicit[index_drumTabParts].second;
-            }
-
-            addDrumTabPartWidget(line, column, DrumTabPart,implicitDrawing);
-            index_drumTabParts++;
-
-
-        }
-    }
-
-    updateGridlayout();
-
-
     // include the main widget in the scrolling area
     // must be at the end after all layout updates
     setWidget(m_drumTabWidgetInScrollingArea);
 
+    // create the widget with the model
+    createWidgetsWithModel();
+
+    // fill the layout
+    updateGridlayout();
+
+}
+
+void DrumTabWidget::setDrumTab(Drum::DrumTab &drumTabModel)
+{
+    m_drumTabModel = &drumTabModel;
+    // create the widget with the model
+    createWidgetsWithModel();
+    // fill the layout
+    updateGridlayout();
 }
 
 // =================
@@ -259,31 +245,27 @@ void DrumTabWidget::addDrumTabPartWidget(int row,
     }
 
     // assert if the drum tab exist
-    if(drumTabPartExist)
-    {
-        throw Drum::DrumException("Error from DrumTabWidget::addDrumTabPartWidget: "
-                                  "trying to add an existing drum-tab part");
-    }
+    Drum::DrumException::drumAssert(drumTabPartExist == false,
+                                    "Error from DrumTabWidget::addDrumTabPartWidget: "
+                                    "trying to add an existing drum-tab part at position {},{}.",
+                                    row,column);
+
+    // assert if the column-row is already taken
+    Drum::DrumException::drumAssert(rowColumnExist == false,
+                                    "Error from DrumTabWidget::addDrumTabPartWidget: "
+                                    "trying to add a drum-tab part in a already used position : {},{}.",
+                                    row,column);
+
+    // add a new drum tab part widget
+    auto newDrumTabPartWidget = new DrumTabPartDisplayWidget(DrumTabPart,
+                                                             implicitDrawing,
+                                                             this);
+    m_DrumTabPartWidget[newDrumTabPartWidget] = std::make_pair(row, column);
+
+    // connection
+    connectDrumTabPartWidget(newDrumTabPartWidget);
 
 
-    // if the row-column combination already exist,
-    // we have to shift all widget
-    if(rowColumnExist == false)
-    {
-        auto newDrumTabPartWidget = new DrumTabPartDisplayWidget(DrumTabPart,
-                                                                 implicitDrawing,
-                                                                 this);
-        m_DrumTabPartWidget[newDrumTabPartWidget] = std::make_pair(row, column);
-
-        // connection
-        connectDrumTabPartWidget(newDrumTabPartWidget);
-    }
-    else
-    {
-        throw Drum::DrumException("Error from DrumTabWidget::addDrumTabPartWidget: "
-                                  "trying to add a drum-tab part in a already used position (" +
-                                  std::to_string(row) + ","+ std::to_string(column)  + ")");
-    }
 
 
 
@@ -310,13 +292,46 @@ std::pair<int,int> DrumTabWidget::getDrumTabPartWidgetRowColumn(DrumTabPartDispl
 void DrumTabWidget::updateGridlayout()
 {
     // note : this function must be called after line nr and column nr have been updated
-    for(const auto partPositionPair : m_DrumTabPartWidget)
+    for(const auto &[drumTabPartWidget,rowColumn] : m_DrumTabPartWidget)
     {
-        m_mainGridLayout->addWidget(partPositionPair.first,
-                                    partPositionPair.second.first,
-                                    partPositionPair.second.second);
+
+        m_mainGridLayout->addWidget(drumTabPartWidget,
+                                    rowColumn.first,
+                                    rowColumn.second);
     }
 
     m_drumTabWidgetInScrollingArea->resize(m_columnNr*DrumTabPartDisplayWidget::getFixedWidth(),
                                            m_lineNr*DrumTabPartDisplayWidget::getFixedHeight());
+}
+
+void DrumTabWidget::createWidgetsWithModel()
+{
+    // empty the widget if they exist
+    for (const auto &[widget,rowColumn] : m_DrumTabPartWidget)
+    {
+        delete widget;
+    }
+
+    m_lineNr = static_cast<int>(std::ceil(static_cast<float>(m_drumTabModel->getDrumTabSize())/m_columnNr));
+    // fill the widget
+    auto drumTabPartsImplicit = m_drumTabModel->getDrumTabParts();
+    unsigned index_drumTabParts(0);
+    for (int line =0; line < m_lineNr; line++)
+    {
+        for (int column=0; column < m_columnNr; column++)
+        {
+
+            Drum::DrumTabPart* DrumTabPart{nullptr};
+            bool implicitDrawing(false);
+            if(index_drumTabParts < drumTabPartsImplicit.size())
+            {
+                DrumTabPart = drumTabPartsImplicit[index_drumTabParts].first;
+                implicitDrawing = drumTabPartsImplicit[index_drumTabParts].second;
+            }
+
+            addDrumTabPartWidget(line, column, DrumTabPart,implicitDrawing);
+            index_drumTabParts++;
+
+        }
+    }
 }

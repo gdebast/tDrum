@@ -7,7 +7,7 @@
 #include "DrumWidget/drumui_drumtabpartcreatorwidget.h"
 #include "DrumUiTools/drumui_drumtabpdfcreator.h"
 #include "DrumWidget/drumui_drummaintoolbar.h"
-
+#include "Tools/tools_directorymanager.h"
 
 using namespace DrumUI;
 
@@ -40,11 +40,11 @@ void DrumMainWindow::createWidget()
 {
     // factories
     m_drumTabFactory = std::make_unique<Drum::DrumTabFactory>();
-    auto drumTab = m_drumTabFactory->loadObject("R:/Programmes/CProject/tDrum/default.drum");
+    auto& drumTab = m_drumTabFactory->loadObject("D:/Development/Cpp/tDrum/default.drum");
     m_drumTabPartFactory = std::make_unique<Drum::DrumTabPartFactory>();
-    auto drumtabPart = m_drumTabPartFactory->loadObject("R:/Programmes/CProject/tDrum/default.drumpart");
+    auto& drumtabPart = m_drumTabPartFactory->loadObject("D:/Development/Cpp/tDrum/default.drumpart");
     m_drumTabPdfPrinterConfigFactory = std::make_unique<Drum::DrumTabPdfPrinterConfigFactory>();
-    auto& drumTabPdfPrinterConfig = m_drumTabPdfPrinterConfigFactory->loadFromFile("R:/Programmes/CProject/tDrum/default.pdfconfig");
+    auto& drumTabPdfPrinterConfig = m_drumTabPdfPrinterConfigFactory->loadObject("D:/Development/Cpp/tDrum/default.pdfconfig");
 
     // widgets
     m_mainWidget = new QWidget(this);
@@ -53,7 +53,7 @@ void DrumMainWindow::createWidget()
     m_qSpacerItemCreator = new QSpacerItem(0,0,QSizePolicy::Fixed,QSizePolicy::Expanding);
     m_drumTabWidget = new DrumTabWidget(4,drumTab,m_mainWidget);
     m_drumTabPartCreatorWidget = new DrumTabPartCreatorWidget(drumtabPart,m_mainWidget);
-    m_drumMainToolBar = new DrumMainToolBar(*drumTab,drumTabPdfPrinterConfig,m_mainWidget);
+    m_drumMainToolBar = new DrumMainToolBar(drumTab,drumTabPdfPrinterConfig,m_mainWidget);
     setCentralWidget(m_mainWidget);
 
     // policies

@@ -10,9 +10,9 @@
 
 using namespace DrumUI;
 
-DrumTabPartCreatorWidget::DrumTabPartCreatorWidget(Drum::DrumTabPart* drumTabPartModel,
+DrumTabPartCreatorWidget::DrumTabPartCreatorWidget(Drum::DrumTabPart& drumTabPartModel,
                                                    QWidget *parent) :
-    DrumTabPartWidgetBase(drumTabPartModel,parent)
+    DrumTabPartWidgetBase(&drumTabPartModel,parent)
 {
     // this widget tracked the mouse to enable fine Qrect drawing
     // see method paintHooveredSelectedQRect

@@ -12,14 +12,22 @@ DrumMainToolBar::DrumMainToolBar(Drum::DrumTab &drumTab,
                                  Drum::DrumTabPdfPrinterConfig& pdfConfig,
                                  QWidget *parent) :
     QWidget(parent),
-    m_drumTab(drumTab),
+    m_drumTab(&drumTab),
     m_drumTabPdfPrinterConfig(pdfConfig),
     m_drumTabPdfCreator(drumTab,pdfConfig)
 {
     createWidget();
+    setDrumTab(drumTab);
     createLayout();
     addWidgetToLayout();
     connectWidget();
+}
+
+void DrumMainToolBar::setDrumTab(Drum::DrumTab &drumTab)
+{
+    m_drumTab = &drumTab;
+    m_qLineEdit_Author->setText(m_drumTab->getAuthor().c_str());
+    m_qLineEdit_Title->setText(m_drumTab->getTitle().c_str());
 }
 
 void DrumMainToolBar::createWidget()
@@ -30,13 +38,14 @@ void DrumMainToolBar::createWidget()
     QFont font("Times", 20);
 
     m_qLineEdit_Author = new QLineEdit(this);
-    m_qLineEdit_Author->setText(m_drumTab.getAuthor().c_str());
+
     m_qLineEdit_Author->setFont(font);
     m_qLineEdit_Author->setSizePolicy(fixedPolicy);
     m_qLineEdit_Title = new QLineEdit(this);
-    m_qLineEdit_Title->setText(m_drumTab.getTitle().c_str());
+
     m_qLineEdit_Title->setFont(font);
     m_qLineEdit_Title->setSizePolicy(ExpendingPolicyHor);
+
     m_rightLeftPushButton_exportToPdf = new UI::RightLeftPushButton(this);
     m_rightLeftPushButton_exportToPdf->setIcon(QIcon(":/tDrum_createPdf_giveTree.svg"));
     m_rightLeftPushButton_exportToPdf->setToolTip("Export to Pdf");
@@ -63,7 +72,7 @@ void DrumMainToolBar::connectWidget()
                      this,
                      [this](const QString &text)
                      {
-                        m_drumTab.setTitle(text.toStdString());
+                        m_drumTab->setTitle(text.toStdString());
                      });
 
     QObject::connect(m_qLineEdit_Author,
@@ -71,7 +80,7 @@ void DrumMainToolBar::connectWidget()
                      this,
                      [this](const QString &text)
                      {
-                        m_drumTab.setAuthor(text.toStdString());
+                        m_drumTab->setAuthor(text.toStdString());
                      });
 
     QObject::connect(m_rightLeftPushButton_exportToPdf,

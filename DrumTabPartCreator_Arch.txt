@@ -1,7 +1,6 @@
-2. explicit/implicit printing option in drum tab menu
-	draw something around the main repeated part
-
 3. multiple drum tab edition
+	load all .drum files in a directory
+
 
 4. draw silence in drum tab 
 

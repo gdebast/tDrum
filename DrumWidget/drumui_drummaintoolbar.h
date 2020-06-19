@@ -29,6 +29,8 @@ namespace DrumUI
                                      Drum::DrumTabPdfPrinterConfig& pdfConfig,
                                      QWidget *parent = nullptr);
 
+            void setDrumTab (Drum::DrumTab& drumTab);
+
         private:
 
             void createWidget();
@@ -43,7 +45,7 @@ namespace DrumUI
             QLineEdit*               m_qLineEdit_Title{nullptr};
             QHBoxLayout*             m_qHBoxLayout_mainLayout{nullptr};
 
-            Drum::DrumTab&                 m_drumTab;
+            Drum::DrumTab*                 m_drumTab;
             Drum::DrumTabPdfPrinterConfig& m_drumTabPdfPrinterConfig;
             DrumTabPdfCreator              m_drumTabPdfCreator;
 

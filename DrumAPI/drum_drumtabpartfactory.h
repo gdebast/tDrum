@@ -24,7 +24,7 @@ namespace Drum {
         DrumTabPartFactory& operator=(DrumTabPartFactory&&) = delete;
         ~DrumTabPartFactory();
 
-        DrumTabPart* loadObject(const std::string& file);
+        DrumTabPart& loadObject(const std::string& file);
         void dumpToFile() const;
 
     private:

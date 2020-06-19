@@ -4,6 +4,10 @@ RESOURCES += Icons/icons.qrc
 
 CONFIG += c++17
 
+
+INCLUDEPATH += D:/Development/Boost
+LIBS += -LD:/Development/Boost/stage/lib libboost_filesystem-mgw8-mt-d-x64-1_73
+
 HEADERS += \
     DrumAPI/drum_drumkithorizontallinehelper.h \
     DrumAPI/drum_drumtabimpliciter.h \
@@ -30,10 +34,13 @@ HEADERS += \
     DrumWidget/drumui_drumtabpdfprinterconfigviewmodel.h \
     DrumWidget/drumui_drumtabwidget.h \
     DrumWidget/drumui_drummainwindow.h \
+    Tools/tools_directorymanager.h \
+    Tools/tools_file.h \
     Tools/tools_serializerhelper.h \
     Tools/tools_serializerhelper_ext.h \
     Tools/tools_stringfunction.h \
     Tools/tools_stringfunction_ext.h \
+    Tools/tools_directory.h \
     UI/ui_rightleftpushbutton.h \
     UI/ui_directorylineedit.h
 
@@ -60,8 +67,11 @@ SOURCES += \
     DrumWidget/drumui_drumtabpdfprinterconfigviewmodel.cpp \
     DrumWidget/drumui_drumtabwidget.cpp \
     DrumWidget/drumui_drummainwindow.cpp \
+    Tools/tools_directorymanager.cpp \
+    Tools/tools_file.cpp \
     Tools/tools_serializerhelper.cpp \
     Tools/tools_stringfunction.cpp \
+    Tools/tools_directory.cpp \
     UI/ui_rightleftpushbutton.cpp \
     UI/ui_directorylineedit.cpp \
     main.cpp

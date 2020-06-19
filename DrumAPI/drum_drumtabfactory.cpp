@@ -12,24 +12,23 @@ DrumTabFactory::DrumTabFactory()
 DrumTabFactory::~DrumTabFactory() = default;
 
 
-DrumTab* DrumTabFactory::loadObject(const std::string& file)
+DrumTab& DrumTabFactory::loadObject(const std::string& file)
 {
 
     // prepare the reading
-    std::ifstream fileStrean(file.c_str());
-    std::string currentLine;
-    if(!fileStrean)
-    {
-        throw DrumException("Error from 'DrumTabFactory::loadDrumTab': '" + file +
-                            "' cannot be read.");
-    }
+    std::ifstream fileStream(file.c_str());
+
+    DrumException::drumAssert(static_cast<bool>(fileStream),
+                              "Error from 'DrumTabFactory::loadDrumTab': '{}' cannot be read.",
+                              file);
 
     // returned drumtab
     auto returnedDrumTab = std::make_unique<DrumTab>();
 
     // read line per line
+    std::string currentLine;
     std::string cumulativeLine;
-    while (std::getline(fileStrean,currentLine))
+    while (std::getline(fileStream,currentLine))
     {
 
         cumulativeLine += currentLine;
@@ -38,7 +37,7 @@ DrumTab* DrumTabFactory::loadObject(const std::string& file)
     returnedDrumTab->fillFromSerialized(cumulativeLine);
 
     m_AllCreatedDrumTab.push_back(std::make_pair(std::move(returnedDrumTab),file));
-    return (*m_AllCreatedDrumTab.rbegin()).first.get();
+    return *(*m_AllCreatedDrumTab.rbegin()).first.get();
 }
 
 void DrumTabFactory::dumpToFile() const

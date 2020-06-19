@@ -16,7 +16,7 @@ DrumTabPartFactory::DrumTabPartFactory()
 DrumTabPartFactory::~DrumTabPartFactory() = default;
 
 
-DrumTabPart* DrumTabPartFactory::loadObject(const std::string &file)
+DrumTabPart& DrumTabPartFactory::loadObject(const std::string &file)
 {
 
     // prepare the reading
@@ -43,7 +43,7 @@ DrumTabPart* DrumTabPartFactory::loadObject(const std::string &file)
     returnedDrumTabPart->fillFromSerialized(helper);
 
     m_AllCreatedDrumTabPart.push_back(std::move(returnedDrumTabPart));
-    return (*m_AllCreatedDrumTabPart.rbegin()).get();
+    return *(*m_AllCreatedDrumTabPart.rbegin()).get();
 }
 
 void DrumTabPartFactory::dumpToFile() const

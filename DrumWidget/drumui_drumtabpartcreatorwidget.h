@@ -19,7 +19,7 @@ namespace DrumUI {
     {
     Q_OBJECT
     public:
-        DrumTabPartCreatorWidget(Drum::DrumTabPart* drumTabPartModel,
+        DrumTabPartCreatorWidget(Drum::DrumTabPart& drumTabPartModel,
                                  QWidget *parent = nullptr);
 
         DrumTabPartCreatorWidget(const DrumTabPartCreatorWidget&) = delete;
