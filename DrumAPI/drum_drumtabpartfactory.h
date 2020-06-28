@@ -21,7 +21,7 @@ namespace Drum {
         DrumTabPartFactory& operator=(DrumTabPartFactory&&) = delete;
         ~DrumTabPartFactory();
 
-        DrumTabPart &getOneObject() final;
+        DrumTabPart &createDefaultObject() final;
 
 
     };

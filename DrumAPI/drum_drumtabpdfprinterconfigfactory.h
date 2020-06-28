@@ -20,7 +20,7 @@ namespace Drum
             DrumTabPdfPrinterConfigFactory& operator=(DrumTabPdfPrinterConfigFactory&&) = delete;
             ~DrumTabPdfPrinterConfigFactory();
 
-            DrumTabPdfPrinterConfig &getOneObject() final;
+            DrumTabPdfPrinterConfig &createDefaultObject() final;
 
     };
 }

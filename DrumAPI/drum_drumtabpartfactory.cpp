@@ -10,15 +10,9 @@ DrumTabPartFactory::DrumTabPartFactory(const Tools::Directory &workingDirectory)
 DrumTabPartFactory::~DrumTabPartFactory() = default;
 
 
-DrumTabPart &DrumTabPartFactory::getOneObject()
+DrumTabPart &DrumTabPartFactory::createDefaultObject()
 {
-    // if one exists; return it
-    if (m_AllCreatedObjects.size() > 0)
-    {
-        return *m_AllCreatedObjects[0].first.get();
-    }
 
-    // otherwise, create an empty drum tab
     auto returnedObject = std::make_unique<DrumTabPart>();
     returnedObject->setDrumTime(16);
 

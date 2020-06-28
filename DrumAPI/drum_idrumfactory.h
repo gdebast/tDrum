@@ -9,6 +9,7 @@
 #include <vector>
 #include <fstream>
 #include <memory>
+#include <stdio.h>
 
 namespace Drum
 {
@@ -23,7 +24,25 @@ namespace Drum
             m_workingDirectory(workingDirectory)
         {}
 
-        virtual FactoryObject &getOneObject() = 0;
+        virtual FactoryObject &createDefaultObject() = 0;
+
+
+        /*
+         * return one of the objects or create a default one.
+         */
+        virtual FactoryObject &getOneObject() final
+        {
+            // if one exists; return it
+            if (m_AllCreatedObjects.size() > 0)
+            {
+                return *m_AllCreatedObjects[0].first.get();
+            }
+
+            // otherwise, create a default object
+            return createDefaultObject();
+
+        }
+
 
         /*
          * method which loads all objects from the extension.
@@ -40,9 +59,15 @@ namespace Drum
 
         /*
          * method which dumps all objects to their files.
+         * The files of the deleted objects are deleted too.
          */
         void dumpToFile() const
         {
+            for(const auto &file : m_fileToRemove)
+            {
+                remove(file.c_str());
+            }
+
 
             for(const auto &[object,file] : m_AllCreatedObjects)
             {
@@ -58,9 +83,30 @@ namespace Drum
         }
 
         /*
+         * methods which delete an Object
+         */
+        void deleteObject(FactoryObject &objectToDelete)
+        {
+            // copy all objects to a new vector
+            std::vector<std::pair<std::unique_ptr<FactoryObject>,std::string>> newObjects;
+            for (auto &[object,file] : m_AllCreatedObjects)
+            {
+                if(object.get() != &objectToDelete)
+                {
+                    newObjects.push_back(std::make_pair(std::move(object),file));
+                }
+                else
+                {
+                    m_fileToRemove.push_back(file);
+                }
+            }
+            m_AllCreatedObjects = std::move(newObjects);
+        }
+
+        /*
          * method returning all created objects
          */
-        std::vector<FactoryObject*> getObjects() final
+        virtual std::vector<FactoryObject*> getObjects() final
         {
             std::vector<FactoryObject*> objects;
             objects.reserve(m_AllCreatedObjects.size());
@@ -71,19 +117,55 @@ namespace Drum
             return objects;
         }
 
-        std::string getDefaultFile() const
+        unsigned getNumberOfInstances() const
         {
-            return m_workingDirectory.getDirectoryPath() + "/" + DEFAULTFILENAME + "." + m_fileExtension;
+            return m_AllCreatedObjects.size();
+        }
+
+        /*
+         * return a file name for an object.
+         * The method garanties that the file does not exist.
+         */
+        virtual std::string getDefaultFile() const final
+        {
+
+            std::string fileFullPath;
+            bool found(false);
+            unsigned index(0);
+            while(found == false)
+            {
+                fileFullPath = m_workingDirectory.getDirectoryPath()
+                        + "/" + DEFAULTFILENAME + std::to_string(index)
+                        + "." + m_fileExtension;
+                found = getObjectFromFile(fileFullPath) == nullptr;
+                index++;
+            }
+
+            return fileFullPath;
+
         }
 
 
     protected:
         std::vector<std::pair<std::unique_ptr<FactoryObject>,std::string>> m_AllCreatedObjects;
+        const Tools::Directory &m_workingDirectory;
 
     private:
         std::string m_fileExtension;
         static const std::string DEFAULTFILENAME;
-        const Tools::Directory &m_workingDirectory;
+        std::vector<std::string> m_fileToRemove;
+
+        FactoryObject* getObjectFromFile(const std::string &fileFullPath) const
+        {
+            for (const auto &[object,file] : m_AllCreatedObjects)
+            {
+                if (fileFullPath == file)
+                {
+                    return object.get();
+                }
+            }
+            return nullptr;
+        }
 
         FactoryObject& loadObject(const std::string& file)
         {

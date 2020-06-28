@@ -7,5 +7,7 @@
   <file>tDrum_createPdf_giveTree.svg</file>
   <file>tDrum_openDirectory_tree.svg</file>
   <file>tDrum_explicitImplicit_drumtabpart.svg</file>
+  <file>tDrum_add.svg</file>
+  <file>tDrum_delete.svg</file>
 </qresource>
 </RCC>

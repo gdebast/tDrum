@@ -9,17 +9,11 @@ DrumTabPdfPrinterConfigFactory::DrumTabPdfPrinterConfigFactory(const Tools::Dire
     IDrumFactory<DrumTabPdfPrinterConfig>("pdfconfig",workingDirectory) {}
 
 
-DrumTabPdfPrinterConfig &DrumTabPdfPrinterConfigFactory::getOneObject()
+DrumTabPdfPrinterConfig &DrumTabPdfPrinterConfigFactory::createDefaultObject()
 {
-    // if one exists; return it
-    if (m_AllCreatedObjects.size() > 0)
-    {
-        return *m_AllCreatedObjects[0].first.get();
-    }
 
-    // otherwise, create an empty drum tab
     auto returnedObject = std::make_unique<DrumTabPdfPrinterConfig>();
-
+    returnedObject->setPdfExportDirector(m_workingDirectory.getDirectoryPath());
 
     m_AllCreatedObjects.push_back(std::make_pair(std::move(returnedObject),getDefaultFile()));
     return *(*m_AllCreatedObjects.rbegin()).first.get();

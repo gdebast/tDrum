@@ -21,7 +21,7 @@ namespace Drum {
         DrumTabFactory& operator=(const DrumTabFactory&) = delete;
         DrumTabFactory& operator=(DrumTabFactory&&) = delete;
 
-        DrumTab &getOneObject() final;
+        DrumTab &createDefaultObject() final;
 
 
     };

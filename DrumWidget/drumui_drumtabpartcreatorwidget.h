@@ -25,11 +25,13 @@ namespace DrumUI {
         DrumTabPartCreatorWidget(const DrumTabPartCreatorWidget&) = delete;
         DrumTabPartCreatorWidget(DrumTabPartCreatorWidget&&) = delete;
 
+        int getWidth() const {return sizeHint().width();}
+
     protected:
-        virtual void paintEvent(QPaintEvent *e) override;
-        virtual QSize sizeHint() const override;
-        virtual void mouseMoveEvent(QMouseEvent *event) override;
-        virtual void mousePressEvent(QMouseEvent *event) override;
+        virtual void paintEvent(QPaintEvent *e) final;
+        virtual QSize sizeHint() const final;
+        virtual void mouseMoveEvent(QMouseEvent *event) final;
+        virtual void mousePressEvent(QMouseEvent *event) final;
 
     private:
 

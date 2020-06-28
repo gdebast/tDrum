@@ -27,6 +27,7 @@ HEADERS += \
     DrumUiTools/drumui_drumtabpdfcreator.h \
     DrumUiTools/drumui_pdfpagemanager.h \
     DrumWidget/drumui_drummaintoolbar.h \
+    DrumWidget/drumui_drumtablistwidget.h \
     DrumWidget/drumui_drumtabpartcreatorwidget.h \
     DrumWidget/drumui_drumtabpartdisplaywidget.h \
     DrumUiTools/drumui_drumtabpartgeometry.h \
@@ -61,6 +62,7 @@ SOURCES += \
     DrumUiTools/drumui_drumtabpdfcreator.cpp \
     DrumUiTools/drumui_pdfpagemanager.cpp \
     DrumWidget/drumui_drummaintoolbar.cpp \
+    DrumWidget/drumui_drumtablistwidget.cpp \
     DrumWidget/drumui_drumtabpartcreatorwidget.cpp \
     DrumWidget/drumui_drumtabpartdisplaywidget.cpp \
     DrumUiTools/drumui_drumtabpartgeometry.cpp \

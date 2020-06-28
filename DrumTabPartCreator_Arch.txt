@@ -1,5 +1,9 @@
 3. multiple drum tab edition
-	load all .drum files in a directory
+	DrumTabListWidget
+		DrumTabListWidget(vector<DrumTab*>)
+		signal drumTabSelected(DrumTab*)
+		signal addDrumTabPressed()
+		signal deleteDrumTabPressed(DrumTab*)
 
 
 4. draw silence in drum tab 

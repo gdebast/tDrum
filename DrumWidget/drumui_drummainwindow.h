@@ -20,6 +20,7 @@ namespace DrumUI
     class DrumTabWidget;
     class DrumTabPartCreatorWidget;
     class DrumMainToolBar;
+    class DrumTabListWidget;
 }
 
 namespace Drum
@@ -51,6 +52,7 @@ namespace DrumUI
         DrumTabWidget                             *m_drumTabWidget{nullptr};
         DrumTabPartCreatorWidget                  *m_drumTabPartCreatorWidget{nullptr};
         DrumMainToolBar                           *m_drumMainToolBar{nullptr};
+        DrumTabListWidget                         *m_drumTabListWidget{nullptr};
 
         std::unique_ptr<Tools::DirectoryManager>               m_directoryManager;
         std::unique_ptr<Drum::DrumTabFactory>                  m_drumTabFactory;
@@ -62,7 +64,7 @@ namespace DrumUI
         QWidget                                   *m_mainWidget{nullptr};
         QWidget                                   *m_tabWidget{nullptr};
         QWidget                                   *m_creatorWidget{nullptr};
-        QSpacerItem                               *m_qSpacerItemCreator{nullptr};
+
         QVBoxLayout                               *m_qVBoxLayoutCreator{nullptr};
         QVBoxLayout                               *m_qVBoxLayoutTab{nullptr};
         QHBoxLayout                               *m_mainLayout{nullptr};
