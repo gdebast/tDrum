@@ -25,11 +25,14 @@ namespace DrumUI
     {
         Q_OBJECT
         public:
-            explicit DrumMainToolBar(Drum::DrumTab& drumTab,
+            explicit DrumMainToolBar(Drum::DrumTab *drumTab, // can be nullprt
                                      Drum::DrumTabPdfPrinterConfig& pdfConfig,
                                      QWidget *parent = nullptr);
 
-            void setDrumTab (Drum::DrumTab& drumTab);
+            void setDrumTab (Drum::DrumTab* drumTab);
+
+        signals:
+            void drumTabChanged(Drum::DrumTab &drumTab);
 
         private:
 

@@ -14,11 +14,11 @@ using namespace DrumUI;
 // =================
 
 DrumTabWidget::DrumTabWidget(int columnNumber ,
-                             Drum::DrumTab& modelDrumTab,
+                             Drum::DrumTab *modelDrumTab,
                              QWidget *parent) :
     QScrollArea(parent),
 
-    m_drumTabModel(&modelDrumTab),
+    m_drumTabModel(modelDrumTab),
     m_columnNr(columnNumber)
 {
 
@@ -39,9 +39,9 @@ DrumTabWidget::DrumTabWidget(int columnNumber ,
 
 }
 
-void DrumTabWidget::setDrumTab(Drum::DrumTab &drumTabModel)
+void DrumTabWidget::setDrumTab(Drum::DrumTab *drumTabModel)
 {
-    m_drumTabModel = &drumTabModel;
+    m_drumTabModel = drumTabModel;
     // create the widget with the model
     createWidgetsWithModel();
     // fill the layout
@@ -112,6 +112,11 @@ void DrumTabWidget::removeDrumTabRow(DrumTabPartDisplayWidget *sender)
     // to recreate it in the following loop
     decltype(m_DrumTabPartWidget) newDrumTabPartWidget;
 
+    // assert if the model exist
+    Drum::DrumException::drumAssert(m_drumTabModel,
+                                    "Error from DrumTabWidget::removeDrumTabRow: "
+                                    "trying to remove a row of drum tab parts}."
+                                    "It is impossible since the model is nullptr.");
 
     for(const auto& partPositionPair : m_DrumTabPartWidget)
     {
@@ -230,6 +235,13 @@ void DrumTabWidget::addDrumTabPartWidget(int row,
     // create one
     else
     {
+        // assert if the model exist
+        Drum::DrumException::drumAssert(m_drumTabModel,
+                                        "Error from DrumTabWidget::addDrumTabPartWidget: "
+                                        "trying to create a drum tab part for row-column {},{}."
+                                        "It is impossible since the model is nullptr.",
+                                        row,column);
+
         DrumTabPart = m_drumTabModel->addDrumTabPart(column+m_columnNr*row); // add empty drum tab part
     }
 
@@ -311,6 +323,11 @@ void DrumTabWidget::createWidgetsWithModel()
     {
         delete widget;
     }
+    m_DrumTabPartWidget.clear();
+
+    // do not continue if the model is nullptr
+    if (m_drumTabModel == nullptr)
+        return;
 
     m_lineNr = static_cast<int>(std::ceil(static_cast<float>(m_drumTabModel->getDrumTabSize())/m_columnNr));
     // fill the widget

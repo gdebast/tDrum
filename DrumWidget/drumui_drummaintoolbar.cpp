@@ -8,11 +8,11 @@
 
 using namespace DrumUI;
 
-DrumMainToolBar::DrumMainToolBar(Drum::DrumTab &drumTab,
+DrumMainToolBar::DrumMainToolBar(Drum::DrumTab *drumTab,
                                  Drum::DrumTabPdfPrinterConfig& pdfConfig,
                                  QWidget *parent) :
     QWidget(parent),
-    m_drumTab(&drumTab),
+    m_drumTab(drumTab),
     m_drumTabPdfPrinterConfig(pdfConfig),
     m_drumTabPdfCreator(drumTab,pdfConfig)
 {
@@ -23,11 +23,18 @@ DrumMainToolBar::DrumMainToolBar(Drum::DrumTab &drumTab,
     connectWidget();
 }
 
-void DrumMainToolBar::setDrumTab(Drum::DrumTab &drumTab)
+void DrumMainToolBar::setDrumTab(Drum::DrumTab *drumTab)
 {
-    m_drumTab = &drumTab;
-    m_qLineEdit_Author->setText(m_drumTab->getAuthor().c_str());
-    m_qLineEdit_Title->setText(m_drumTab->getTitle().c_str());
+    m_drumTab = drumTab;
+
+    QString title(m_drumTab ? m_drumTab->getTitle().c_str() : "");
+    QString author(m_drumTab ? m_drumTab->getAuthor().c_str() : "");
+
+    m_qLineEdit_Author->setText(author);
+    m_qLineEdit_Title->setText(title);
+
+    m_qLineEdit_Author->setEnabled(m_drumTab);
+    m_qLineEdit_Title->setEnabled(m_drumTab);
 }
 
 void DrumMainToolBar::createWidget()
@@ -72,7 +79,12 @@ void DrumMainToolBar::connectWidget()
                      this,
                      [this](const QString &text)
                      {
-                        m_drumTab->setTitle(text.toStdString());
+                        if (m_drumTab == nullptr)
+                            return;
+
+                        auto &drumTab(*m_drumTab);
+                        drumTab.setTitle(text.toStdString());
+                        emit drumTabChanged(drumTab);
                      });
 
     QObject::connect(m_qLineEdit_Author,
@@ -80,7 +92,12 @@ void DrumMainToolBar::connectWidget()
                      this,
                      [this](const QString &text)
                      {
-                        m_drumTab->setAuthor(text.toStdString());
+                        if (m_drumTab == nullptr)
+                            return;
+
+                        auto &drumTab(*m_drumTab);
+                        drumTab.setAuthor(text.toStdString());
+                        emit drumTabChanged(drumTab);
                      });
 
     QObject::connect(m_rightLeftPushButton_exportToPdf,

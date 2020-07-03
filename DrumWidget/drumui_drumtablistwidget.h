@@ -35,6 +35,9 @@ namespace DrumUI
 
             void addRow(Drum::DrumTab* drumTab = nullptr);
             void deleteRow(Drum::DrumTab& drumTab);
+            int getHeaderColumn(const std::string& headerName) const;
+            Drum::DrumTab *getDrumTabAtRow(int row) const;
+            void connectStaticWidget();
 
             std::map<Drum::DrumTab*,std::pair<QTableWidgetItem*,QPushButton*>>  m_drumTabButtonMap;
             Drum::DrumTabFactory                                               &m_drumTabFactory;

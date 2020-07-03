@@ -20,7 +20,7 @@ namespace DrumUI
      */
 
     public:
-        explicit DrumTabPdfCreator(const Drum::DrumTab& drumTab,
+        explicit DrumTabPdfCreator(const Drum::DrumTab *drumTab,
                                    const Drum::DrumTabPdfPrinterConfig& pdfConfig);
         DrumTabPdfCreator(const DrumTabPdfCreator&) = delete;
         DrumTabPdfCreator(DrumTabPdfCreator&&) = delete;
@@ -31,8 +31,8 @@ namespace DrumUI
         void createPdf();
     private:
 
-        const Drum::DrumTab&                 m_drumTab;
-        const Drum::DrumTabPdfPrinterConfig& m_drumTabPdfPrinterConfig;
+        const Drum::DrumTab                  *m_drumTab;
+        const Drum::DrumTabPdfPrinterConfig  &m_drumTabPdfPrinterConfig;
     };
 
 }

@@ -52,10 +52,6 @@ DrumTabListWidget::DrumTabListWidget(Drum::DrumTabFactory& drumTabFactory,
     }
     m_tableWidget->setHorizontalHeaderLabels(tableHeader);
 
-    QObject::connect(m_addButton,&QPushButton::clicked,
-                     this,[this](){addRow();});
-
-
     // add a row per drum tab in the factory
     for(auto* drumTab : m_drumTabFactory.getObjects())
     {
@@ -63,6 +59,9 @@ DrumTabListWidget::DrumTabListWidget(Drum::DrumTabFactory& drumTabFactory,
     }
 
     m_tableWidget->resizeColumnsToContents();
+
+    // connect the widgets
+    connectStaticWidget();
 
 }
 
@@ -77,10 +76,10 @@ void DrumTabListWidget::drumTabTitleAuthorChanged(Drum::DrumTab &changedDrumTab)
 
     unsigned row = m_tableWidget->row(it->second.first);
 
-    auto* titleItem = m_tableWidget->item(row,2);
+    auto* titleItem = m_tableWidget->item(row,getHeaderColumn("Title"));
     titleItem->setText(changedDrumTab.getTitle().c_str());
 
-    auto* authorItem = m_tableWidget->item(row,1);
+    auto* authorItem = m_tableWidget->item(row,getHeaderColumn("Author"));
     authorItem->setText(changedDrumTab.getAuthor().c_str());
 
 }
@@ -153,7 +152,8 @@ void DrumTabListWidget::deleteRow(Drum::DrumTab &drumTab)
                                     "Error from DrumTabListWidget::deleteRow: "
                                     "cannot find the pointer.");
 
-    m_tableWidget->removeRow(m_tableWidget->row(it->second.first));
+    unsigned deletedRow(m_tableWidget->row(it->second.first));
+    m_tableWidget->removeRow(deletedRow);
     delete it->second.second;
     m_drumTabButtonMap.erase(it);
     m_drumTabFactory.deleteObject(drumTab);
@@ -166,6 +166,65 @@ void DrumTabListWidget::deleteRow(Drum::DrumTab &drumTab)
                                     "factory and widget do not haver the same size."
                                     "Measured {} and {}",factorySize,widgetSize);
 
+    // assert that the number of row is positive because at least the add button exists
+    int numberOfRow = m_tableWidget->rowCount();
+    Drum::DrumException::drumAssert(numberOfRow > 0,
+                                    "Error from DrumTabListWidget::deleteRow: "
+                                    "the number of remaining rows in not positive."
+                                    "Measured {}",numberOfRow);
+
+    // set the focus to the closest upper item (deletedRow-1) if possible
+    unsigned newSelectedRow(deletedRow > 0 ? deletedRow-1 : 0);
+    auto *newSelectedDrumTab = getDrumTabAtRow(newSelectedRow);
+    m_tableWidget->selectRow(newSelectedRow); //note: QTableWidget::selectRow does trigger QTableWidget::cellClicked
+    emit drumTabSelected(newSelectedDrumTab);
+
+}
+
+int DrumTabListWidget::getHeaderColumn(const std::string &headerName) const
+{
+    unsigned column(0);
+    for(const auto &[shown, header] : s_headers)
+    {
+        if (header == headerName)
+            return column;
+        column++;
+    }
+    return -1;
+}
+
+Drum::DrumTab *DrumTabListWidget::getDrumTabAtRow(int row) const
+{
+    for(const auto &[drumTab, itemButtonPair] : m_drumTabButtonMap)
+    {
+        if(row == m_tableWidget->row(itemButtonPair.first))
+        {
+            return drumTab;
+        }
+    }
+    return nullptr;
+}
+
+void DrumTabListWidget::connectStaticWidget()
+{
+    // connect the unique add button
+    QObject::connect(m_addButton,
+                     &QPushButton::clicked,
+                     this,
+                     [this]()
+                          {
+                            addRow();
+                          });
+
+    // connect selected row
+    QObject::connect(m_tableWidget,
+                     &QTableWidget::cellClicked,
+                     this,
+                     [this](int row, int)
+                          {
+                            auto *drumTab = getDrumTabAtRow(row);
+                            emit drumTabSelected(drumTab);
+                          });
 }
 
 

@@ -60,8 +60,8 @@ void DrumMainWindow::createWidget()
     m_mainWidget = new QWidget(this);
     m_tabWidget = new QWidget(m_mainWidget);
     m_creatorWidget = new QWidget(m_mainWidget);
-    m_drumTabWidget = new DrumTabWidget(4,drumTab,m_tabWidget);
-    m_drumMainToolBar = new DrumMainToolBar(drumTab,drumTabPdfPrinterConfig,m_tabWidget);
+    m_drumTabWidget = new DrumTabWidget(4,&drumTab,m_tabWidget);
+    m_drumMainToolBar = new DrumMainToolBar(&drumTab,drumTabPdfPrinterConfig,m_tabWidget);
     m_drumTabPartCreatorWidget = new DrumTabPartCreatorWidget(drumtabPart,m_creatorWidget);
     m_drumTabListWidget = new DrumTabListWidget(*m_drumTabFactory,m_creatorWidget);
     setCentralWidget(m_mainWidget);
@@ -139,5 +139,21 @@ void DrumMainWindow::connectWidget()
                      {
                         sender->setDrumTabPart(m_copiedDrumTabPart);
                      });
+
+    // connect the list Widget
+    QObject::connect(m_drumMainToolBar,
+                     &DrumMainToolBar::drumTabChanged,
+                     m_drumTabListWidget,
+                     &DrumTabListWidget::drumTabTitleAuthorChanged);
+
+    QObject::connect(m_drumTabListWidget,
+                     &DrumTabListWidget::drumTabSelected,
+                     m_drumTabWidget,
+                     &DrumTabWidget::setDrumTab);
+
+    QObject::connect(m_drumTabListWidget,
+                     &DrumTabListWidget::drumTabSelected,
+                     m_drumMainToolBar,
+                     &DrumMainToolBar::setDrumTab);
 
 }

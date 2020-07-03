@@ -28,9 +28,16 @@ namespace DrumUI {
     {
         Q_OBJECT
     public:
-        explicit DrumTabWidget(int columnNumber, Drum::DrumTab& drumTabModel, QWidget *parent = nullptr);
+        explicit DrumTabWidget(int columnNumber,
+                               Drum::DrumTab *drumTabModel, // can be nullptr which means that the widget is empty
+                               QWidget *parent = nullptr);
 
-        void setDrumTab(Drum::DrumTab& drumTabModel);
+        /*
+         * setter for the model in the widget.
+         * the given widget can be nullptr which means that
+         * the widget is emptied.
+         */
+        void setDrumTab(Drum::DrumTab* drumTabModel);
 
     signals:
         void menuCopyPressed(const Drum::DrumTabPart& copiedDrumTabPart);
@@ -49,7 +56,10 @@ namespace DrumUI {
          * If the new DrumTabPart is nullptr, then this widget will ask to the model
          * to add a new DrumTabPart which is drawn explicitly (last argument).
          */
-        void addDrumTabPartWidget(int row, int colum, Drum::DrumTabPart* newPart = nullptr, bool implicitDrawing = false);
+        void addDrumTabPartWidget(int row,
+                                  int colum,
+                                  Drum::DrumTabPart* newPart = nullptr,
+                                  bool implicitDrawing = false);
 
 
         void removeDrumTabPartWidget(DrumTabPartDisplayWidget* widget);
@@ -67,7 +77,7 @@ namespace DrumUI {
         void createWidgetsWithModel();
 
         // model
-        Drum::DrumTab*                    m_drumTabModel;
+        Drum::DrumTab* m_drumTabModel;
 
         // UI
         int                                              m_columnNr{0};

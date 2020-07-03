@@ -14,7 +14,7 @@
 
 using namespace DrumUI;
 
-DrumTabPdfCreator::DrumTabPdfCreator(const Drum::DrumTab& drumTab,
+DrumTabPdfCreator::DrumTabPdfCreator(const Drum::DrumTab* drumTab, //can be nullptr but then, does not print
                                      const Drum::DrumTabPdfPrinterConfig& pdfConfig) :
     m_drumTab(drumTab),
     m_drumTabPdfPrinterConfig(pdfConfig)
@@ -24,8 +24,15 @@ DrumTabPdfCreator::DrumTabPdfCreator(const Drum::DrumTab& drumTab,
 
 void DrumTabPdfCreator::createPdf()
 {
+
+    if(m_drumTab == nullptr)
+        return;
+
+
+    const auto &drumTab = *m_drumTab;
+
     // create the pdf name
-    std::string fileName =  "tDrum_"+ m_drumTab.getAuthor() + "_" + m_drumTab.getTitle()  + ".pdf";
+    std::string fileName =  "tDrum_"+ drumTab.getAuthor() + "_" + drumTab.getTitle()  + ".pdf";
     fileName.erase(std::remove(fileName.begin(),
                                fileName.end(),
                                ' '),
@@ -56,11 +63,11 @@ void DrumTabPdfCreator::createPdf()
     Drum::DrumTabImpliciter::DrumTabPartRepetition tabToPrint;
     if (m_drumTabPdfPrinterConfig.isDrumTabPrintingExplicit())
     {
-        tabToPrint = impliciter.getExplicit(m_drumTab.getDrumTabParts());
+        tabToPrint = impliciter.getExplicit(drumTab.getDrumTabParts());
     }
     else
     {
-        tabToPrint = impliciter.getImplicit(m_drumTab.getDrumTabParts());
+        tabToPrint = impliciter.getImplicit(drumTab.getDrumTabParts());
     }
 
 
