@@ -1,10 +1,7 @@
-3. multiple drum tab edition
-	DrumTabListWidget
-		DrumTabListWidget(vector<DrumTab*>)
-		signal drumTabSelected(DrumTab*)
-		signal addDrumTabPressed()
-		signal deleteDrumTabPressed(DrumTab*)
-
+3. UI enhancement
+	ctrl+scroll
+	number of the head drumtabpart in front of each line
+	drum tab part : add left, add right, remove
 
 4. draw silence in drum tab 
 

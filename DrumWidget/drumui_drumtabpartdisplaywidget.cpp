@@ -21,16 +21,23 @@ DrumTabPartDisplayWidget::DrumTabPartDisplayWidget(Drum::DrumTabPart* drumTabPar
 
     // add some menu item to the base class menu
     m_rightClickMenu_ExplicitImplicitToggle = m_rightClickMenu->addAction(m_implicitDrawing? "set explicit" : "set implicit");
-    auto addTabLineSection = m_rightClickMenu->addMenu("tab line");
+    auto *addTabLineSection = m_rightClickMenu->addMenu("tab line");
     m_rightClickMenu_AddTabOver = addTabLineSection->addAction("add above");
     m_rightClickMenu_AddTabUnder = addTabLineSection->addAction("add below");
     m_rightClickMenu_RemoveTabLine = addTabLineSection->addAction("remove");
+    auto *addTabPartSection = m_rightClickMenu->addMenu("tab part");
+    m_rightClickMenu_AddTabPartLeft = addTabPartSection->addAction("add left");
+    m_rightClickMenu_AddTabPartRight = addTabPartSection->addAction("add right");
+    m_rightClickMenu_RemoveTabPart = addTabPartSection->addAction("remove");
 
     // connection
-    QObject::connect(m_rightClickMenu_AddTabOver,&QAction::triggered,this,[this](){emit this->menuAddTabLinePressed(this,true);});
-    QObject::connect(m_rightClickMenu_AddTabUnder,&QAction::triggered,this,[this](){emit this->menuAddTabLinePressed(this,false);});
-    QObject::connect(m_rightClickMenu_RemoveTabLine,&QAction::triggered,this,[this](){emit this->menuRemoveTabLinePressed(this);});
-    QObject::connect(m_rightClickMenu_ExplicitImplicitToggle,&QAction::triggered,this,[this](){emit this->explicitImplicitToggled(this);});
+    QObject::connect(m_rightClickMenu_AddTabOver,&QAction::triggered,this,[this](){emit menuAddTabLinePressed(this,true);});
+    QObject::connect(m_rightClickMenu_AddTabUnder,&QAction::triggered,this,[this](){emit menuAddTabLinePressed(this,false);});
+    QObject::connect(m_rightClickMenu_RemoveTabLine,&QAction::triggered,this,[this](){emit menuRemoveTabLinePressed(this);});
+    QObject::connect(m_rightClickMenu_ExplicitImplicitToggle,&QAction::triggered,this,[this](){emit explicitImplicitToggled(this);});
+    QObject::connect(m_rightClickMenu_AddTabPartLeft,&QAction::triggered,this,[this](){emit menuAddTabPartPressed(this,true);});
+    QObject::connect(m_rightClickMenu_AddTabPartRight,&QAction::triggered,this,[this](){emit menuAddTabPartPressed(this,false);});
+    QObject::connect(m_rightClickMenu_RemoveTabPart,&QAction::triggered,this,[this](){emit menuRemoveTabPartPressed(this);});
 
     QSizePolicy policy(QSizePolicy::Policy::Fixed,QSizePolicy::Policy::Fixed);
     setSizePolicy(policy);

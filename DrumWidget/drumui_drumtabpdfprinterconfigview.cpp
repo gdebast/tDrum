@@ -65,7 +65,7 @@ void DrumTabPdfPrinterConfigView::createWidget()
 void DrumTabPdfPrinterConfigView::createLayout()
 {
     m_mainLayout = new QVBoxLayout(this);
-    m_NumberOfPartPerRowLayout = new QHBoxLayout(this);
+    m_NumberOfPartPerRowLayout = new QHBoxLayout();
 }
 
 void DrumTabPdfPrinterConfigView::addWidgetToLayout()

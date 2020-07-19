@@ -45,6 +45,8 @@ namespace DrumUI{
         void explicitImplicitToggled(DrumTabPartDisplayWidget* selectedWidget);
         void menuAddTabLinePressed(DrumTabPartDisplayWidget* sender,bool aboveBelow); //Above = true, Below=false
         void menuRemoveTabLinePressed(DrumTabPartDisplayWidget* sender);
+        void menuAddTabPartPressed(DrumTabPartDisplayWidget* sender,bool leftRight); //Left = true, Right=false
+        void menuRemoveTabPartPressed(DrumTabPartDisplayWidget* sender);
 
     public slots:
 
@@ -61,6 +63,9 @@ namespace DrumUI{
         QAction *m_rightClickMenu_AddTabUnder{nullptr};
         QAction *m_rightClickMenu_AddTabOver{nullptr};
         QAction *m_rightClickMenu_RemoveTabLine{nullptr};
+        QAction *m_rightClickMenu_AddTabPartLeft{nullptr};
+        QAction *m_rightClickMenu_AddTabPartRight{nullptr};
+        QAction *m_rightClickMenu_RemoveTabPart{nullptr};
 
     };
 

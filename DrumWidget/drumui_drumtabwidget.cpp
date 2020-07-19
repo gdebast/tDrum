@@ -71,9 +71,18 @@ void DrumTabWidget::updateSelectedDrumTabPartWidget(DrumTabPartDisplayWidget* ne
 // add a row of drum tab parts below (false) or above(true)
 void DrumTabWidget::addDrumTabPartRow(DrumTabPartDisplayWidget *sender, bool aboveBelow)
 {
+    emptyGarbage();
+
     // find the row where the trigger is sent
-    auto senderRowColumn = getDrumTabPartWidgetRowColumn(sender);
-    auto senderRow = senderRowColumn.first;
+    const auto [senderRow, sendColumn] = getDrumTabPartWidgetRowColumn(sender);
+
+    // tells if this row is an incomplete row. If it is, we cannot add a row below
+    std::pair<unsigned,unsigned> incompleteRow_columnAtRow;
+    if (aboveBelow == false && findIncompleteRow(incompleteRow_columnAtRow)
+        && incompleteRow_columnAtRow.first == static_cast<unsigned>(senderRow))
+    {
+        return;
+    }
 
     // the shift is defined by the boolean
     //  if it is true, all row below (including the sender row) is shifted by +1
@@ -83,11 +92,11 @@ void DrumTabWidget::addDrumTabPartRow(DrumTabPartDisplayWidget *sender, bool abo
 
 
     // shift
-    for(auto partPositionPair : m_DrumTabPartWidget)
+    for(const auto &[drumTabPartWidget,position] : m_DrumTabPartWidget)
     {
-        if(partPositionPair.second.first >= firstShiftedRow)
+        if(position.first >= firstShiftedRow)
         {
-            m_DrumTabPartWidget[partPositionPair.first] = std::make_pair(partPositionPair.second.first+1,partPositionPair.second.second);
+            m_DrumTabPartWidget[drumTabPartWidget] = std::make_pair(position.first+1,position.second);
         }
     }
 
@@ -96,7 +105,7 @@ void DrumTabWidget::addDrumTabPartRow(DrumTabPartDisplayWidget *sender, bool abo
     {
         addDrumTabPartWidget(firstShiftedRow,column);
     }
-    m_lineNr++;
+    m_rowNr++;
 
     updateGridlayout();
 
@@ -104,13 +113,74 @@ void DrumTabWidget::addDrumTabPartRow(DrumTabPartDisplayWidget *sender, bool abo
 
 }
 
+void DrumTabWidget::addDrumTabPartWidget(DrumTabPartDisplayWidget *sender, bool leftRight)
+{
+    emptyGarbage();
+
+    // find the row where the trigger is sent
+    const auto [senderRow, sendColumn] = getDrumTabPartWidgetRowColumn(sender);
+
+    // new position computation.
+    // by default, we just keep the same line with one more column if we add to the right
+    // if the column goes out of range, the logic go the row above or below.
+    // if the row goes out of range, we take the first position (0,0)
+    int newColumn = sendColumn + (leftRight == false);
+    int newRow(senderRow);
+    if (newColumn < 0)
+    {
+        newColumn = m_columnNr-1;
+        newRow = senderRow-1;
+    }
+    else if (newColumn >= m_columnNr)
+    {
+        newColumn = 0;
+        newRow = senderRow+1;
+    }
+    if (newRow < 0)
+    {
+        newColumn = 0;
+        newRow = 0;
+    }
+
+    // shift existing widgets
+    for(const auto &[drumTabPartWidget,position] : m_DrumTabPartWidget)
+    {
+        // shift happens if the existing widget row is below the new row or
+        // if it is at the same row and with a larger or equal column.
+        if(position.first > newRow || (position.first == newRow && position.second >= newColumn))
+        {
+            int existingNewRow(position.first);
+            int existingNewColumn(position.second+1);
+            if(existingNewColumn>=m_columnNr)
+            {
+                existingNewRow++;
+                existingNewColumn = 0;
+            }
+            m_DrumTabPartWidget[drumTabPartWidget] = std::make_pair(existingNewRow,existingNewColumn);
+        }
+    }
+
+
+    addDrumTabPartWidget(newRow,newColumn);
+    computeLineNr();
+    updateGridlayout();
+
+}
+
 void DrumTabWidget::removeDrumTabRow(DrumTabPartDisplayWidget *sender)
 {
+    emptyGarbage();
+
     auto deletedRow = getDrumTabPartWidgetRowColumn(sender).first;
 
     // create a copy of the drum tab part widget with their position
     // to recreate it in the following loop
     decltype(m_DrumTabPartWidget) newDrumTabPartWidget;
+
+    if (sender == m_selectedDrumTabPartWidget)
+    {
+        m_selectedDrumTabPartWidget = nullptr;
+    }
 
     // assert if the model exist
     Drum::DrumException::drumAssert(m_drumTabModel,
@@ -128,11 +198,11 @@ void DrumTabWidget::removeDrumTabRow(DrumTabPartDisplayWidget *sender)
         if(row == deletedRow)
         {
             m_drumTabModel->removeDrumTabPart(m_columnNr*row);
-            m_mainGridLayout->removeWidget(partWigdget);
             partWigdget->hide();
-            // deleting the pointer will make the app to crash...
-            // this is not a problem because the drumtab-widget is the parent.
+            // do not delete the widget otherwise the widget were it is triggered is a bad ptr
 
+            // we rather put it in the garbage
+            m_removedDrumTabPartDisplayWidgets.push_back(partWigdget);
         }
         // shift the widget of all row below
         else if(row > deletedRow)
@@ -147,10 +217,88 @@ void DrumTabWidget::removeDrumTabRow(DrumTabPartDisplayWidget *sender)
 
     }
 
-    m_DrumTabPartWidget = newDrumTabPartWidget;
+    m_DrumTabPartWidget = std::move(newDrumTabPartWidget);
 
+    m_rowNr--;
     updateGridlayout();
-    m_lineNr--;
+
+
+}
+
+void DrumTabWidget::removeDrumTabPartWidget(DrumTabPartDisplayWidget *sender)
+{
+    emptyGarbage();
+
+    // find the row where the trigger is sent
+    const auto [senderRow, senderColumn] = getDrumTabPartWidgetRowColumn(sender);
+
+    // create a copy of the drum tab part widget with their position
+    // to recreate it in the following loop
+    decltype(m_DrumTabPartWidget) newDrumTabPartWidget;
+
+    if (sender == m_selectedDrumTabPartWidget)
+    {
+        m_selectedDrumTabPartWidget = nullptr;
+    }
+
+    // assert if the model exist
+    Drum::DrumException::drumAssert(m_drumTabModel,
+                                    "Error from DrumTabWidget::removeDrumTabPartWidget: "
+                                    "trying to remove a drum tab part."
+                                    "It is impossible since the model is nullptr.");
+
+    for(const auto& [drumTabPartWidget,position] : m_DrumTabPartWidget)
+    {
+        auto row = position.first;
+        auto column = position.second;
+
+        // remove the widget at this position
+        if(row == senderRow && column == senderColumn)
+        {
+
+            m_drumTabModel->removeDrumTabPart(m_columnNr*row+column);
+            drumTabPartWidget->hide();
+            // do not delete the widget otherwise the widget were it is triggered is a bad ptr
+
+            // we rather put it in the garbage
+            m_removedDrumTabPartDisplayWidgets.push_back(drumTabPartWidget);
+
+
+        }
+        // shift the existing widget
+        else if(row > senderRow || (row == senderRow && column > senderColumn))
+        {
+            // by default we shift by one column to the left
+            // but if the column goes negative, it is moved to the lower line
+            // and if the line goes negative, it is move to the first position
+            int newRow(row);
+            int newColumn(column-1);
+            if (newColumn < 0)
+            {
+                newColumn = m_columnNr-1;
+                newRow--;
+            }
+            if (newRow < 0)
+            {
+                newRow = 0;
+                newColumn = 0;
+            }
+
+            newDrumTabPartWidget[drumTabPartWidget] = std::make_pair(newRow,newColumn);
+        }
+        // copy all widgets if they are not affected
+        else
+        {
+            newDrumTabPartWidget[drumTabPartWidget] = std::make_pair(row,column);
+        }
+
+    }
+
+    m_DrumTabPartWidget = std::move(newDrumTabPartWidget);
+
+    computeLineNr();
+    updateGridlayout();
+
 
 }
 
@@ -217,7 +365,23 @@ void DrumTabWidget::connectDrumTabPartWidget(DrumTabPartDisplayWidget *widget)
                      });
 
 
+    // add part left/right connection
+    QObject::connect(widget,
+                     &DrumTabPartDisplayWidget::menuAddTabPartPressed,
+                     this,
+                     [this](DrumTabPartDisplayWidget* sender,bool rightLeft)
+                     {
+                        addDrumTabPartWidget(sender,rightLeft);
+                     });
 
+    // remove part connection
+    QObject::connect(widget,
+                     &DrumTabPartDisplayWidget::menuRemoveTabPartPressed,
+                     this,
+                     [this](DrumTabPartDisplayWidget* sender)
+                     {
+                        removeDrumTabPartWidget(sender);
+                     });
 }
 
 // function adding a tab-part widget to this tab widget
@@ -303,17 +467,47 @@ std::pair<int,int> DrumTabWidget::getDrumTabPartWidgetRowColumn(DrumTabPartDispl
 
 void DrumTabWidget::updateGridlayout()
 {
+    // empty the layouts
+    QLayoutItem *item;
+    while ((item = m_mainGridLayout->takeAt(0)) != nullptr)
+    {
+        delete item;
+    }
+    m_gridSpacerForIncompleteRow = nullptr; // deleted with all items
+
     // note : this function must be called after line nr and column nr have been updated
     for(const auto &[drumTabPartWidget,rowColumn] : m_DrumTabPartWidget)
     {
+
+        // assert if the column-row is already taken
+        Drum::DrumException::drumAssert(rowColumn.first < m_rowNr && rowColumn.second < m_columnNr,
+                                        "Error from DrumTabWidget::updateGridlayout: "
+                                        "when lopping over drum tab parts, one of the parts "
+                                        "is at position ({},{}) while the maximum number of "
+                                        "rows and columns are {} and {}",
+                                        rowColumn.first,rowColumn.second,
+                                        m_rowNr,m_columnNr);
 
         m_mainGridLayout->addWidget(drumTabPartWidget,
                                     rowColumn.first,
                                     rowColumn.second);
     }
 
+    // add a spacer at the end if the last row is incomplete
+    std::pair<unsigned,unsigned> incompleteRow_columnAtRow;
+    if (findIncompleteRow(incompleteRow_columnAtRow))
+    {
+        m_gridSpacerForIncompleteRow = new QSpacerItem(0,0, QSizePolicy::Expanding);
+        m_mainGridLayout->addItem(m_gridSpacerForIncompleteRow,
+                                  incompleteRow_columnAtRow.first,
+                                  incompleteRow_columnAtRow.second,
+                                  1,m_columnNr - incompleteRow_columnAtRow.second);
+    }
+
+
+
     m_drumTabWidgetInScrollingArea->resize(m_columnNr*DrumTabPartDisplayWidget::getFixedWidth(),
-                                           m_lineNr*DrumTabPartDisplayWidget::getFixedHeight());
+                                           m_rowNr*DrumTabPartDisplayWidget::getFixedHeight());
 }
 
 void DrumTabWidget::createWidgetsWithModel()
@@ -323,17 +517,19 @@ void DrumTabWidget::createWidgetsWithModel()
     {
         delete widget;
     }
+    m_selectedDrumTabPartWidget = nullptr;
     m_DrumTabPartWidget.clear();
 
     // do not continue if the model is nullptr
     if (m_drumTabModel == nullptr)
         return;
 
-    m_lineNr = static_cast<int>(std::ceil(static_cast<float>(m_drumTabModel->getDrumTabSize())/m_columnNr));
+    computeLineNr();
+
     // fill the widget
     auto drumTabPartsImplicit = m_drumTabModel->getDrumTabParts();
     unsigned index_drumTabParts(0);
-    for (int line =0; line < m_lineNr; line++)
+    for (int line =0; line < m_rowNr; line++)
     {
         for (int column=0; column < m_columnNr; column++)
         {
@@ -351,4 +547,45 @@ void DrumTabWidget::createWidgetsWithModel()
 
         }
     }
+}
+
+void DrumTabWidget::computeLineNr()
+{
+    m_rowNr = static_cast<int>(std::ceil(static_cast<float>(m_drumTabModel->getDrumTabSize())/m_columnNr));
+}
+
+void DrumTabWidget::emptyGarbage()
+{
+    for (auto *widget : m_removedDrumTabPartDisplayWidgets)
+    {
+        delete widget;
+    }
+    m_removedDrumTabPartDisplayWidgets.clear();
+}
+
+bool DrumTabWidget::findIncompleteRow(std::pair<unsigned, unsigned> &incompleteRow_ColumnAtRow)
+{
+    //find the rows with incomplete number of columns
+    std::map<int,int> rowColumnNbr;
+    for(const auto &[drumTabPartWidget,rowColumn] : m_DrumTabPartWidget)
+    {
+        rowColumnNbr[rowColumn.first]++;
+    }
+    std::vector<int> incompleteRows;
+    for (const auto &[row,nrbOfColumn] : rowColumnNbr)
+    {
+        if (nrbOfColumn != m_columnNr)
+            incompleteRows.push_back(row);
+    }
+    Drum::DrumException::drumAssert(incompleteRows.size() <= 1,
+                                    "Error from DrumTabWidget::findIncompleteRow: "
+                                    "there are more then one incomplete row.");
+
+    if (incompleteRows.size() == 1)
+    {
+        incompleteRow_ColumnAtRow.first = incompleteRows[0];
+        incompleteRow_ColumnAtRow.second = rowColumnNbr[incompleteRows[0]];
+    }
+
+    return incompleteRows.size() == 1;
 }

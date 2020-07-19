@@ -45,10 +45,13 @@ namespace DrumUI {
 
     private:
 
-        // functions
-        void addDrumTabPartRow(DrumTabPartDisplayWidget* sender,bool aboveBelow);
+        // functions used in slots
+        void addDrumTabPartRow(DrumTabPartDisplayWidget* sender,bool aboveBelow /*above=true,below=false*/);
+        void addDrumTabPartWidget(DrumTabPartDisplayWidget* sender,bool leftRight);
         void removeDrumTabRow(DrumTabPartDisplayWidget* sender);
+        void removeDrumTabPartWidget(DrumTabPartDisplayWidget* sender);
         void updateSelectedDrumTabPartWidget(DrumTabPartDisplayWidget* newSelectedDrumTabPartWidget);
+
         void connectDrumTabPartWidget(DrumTabPartDisplayWidget* widget);
 
         /*
@@ -62,7 +65,6 @@ namespace DrumUI {
                                   bool implicitDrawing = false);
 
 
-        void removeDrumTabPartWidget(DrumTabPartDisplayWidget* widget);
         std::pair<int,int> getDrumTabPartWidgetRowColumn(DrumTabPartDisplayWidget* widget) const; // (row,column)
 
         /*
@@ -76,16 +78,40 @@ namespace DrumUI {
          */
         void createWidgetsWithModel();
 
+        /*
+         * method which simply set m_lineNr based on the number of column in m_columnNr.
+         */
+        void computeLineNr();
+
+        /*
+         * method to empty the garbage. The garbage consist of Widgets which
+         * could not have been deleted at a right moment and thus should have been deleted later.
+         */
+        void emptyGarbage();
+
+        /*
+         * method returning the incomplete row (first in the reference pair)
+         * and the number of column at this row (second in the reference pair).
+         * The bool tells if such a row was found.
+         */
+        bool findIncompleteRow(std::pair<unsigned,unsigned> &incompleteRow_ColumnAtRow);
+
+
         // model
         Drum::DrumTab* m_drumTabModel;
 
         // UI
         int                                              m_columnNr{0};
-        int                                              m_lineNr{0};
+        int                                              m_rowNr{0};
         QGridLayout                                     *m_mainGridLayout{nullptr};
         DrumTabPartDisplayWidget                        *m_selectedDrumTabPartWidget{nullptr};
         std::map<DrumTabPartDisplayWidget*,std::pair<int,int>>  m_DrumTabPartWidget;
         QWidget                                         *m_drumTabWidgetInScrollingArea{nullptr};
+        QSpacerItem                                     *m_gridSpacerForIncompleteRow{nullptr};
+
+        // garbage collections
+        std::vector<DrumTabPartDisplayWidget*>           m_removedDrumTabPartDisplayWidgets;
+
 
 
 
