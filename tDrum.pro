@@ -15,7 +15,6 @@ HEADERS += \
     DrumAPI/drum_drumtabpdfprinterconfigfactory.h \
     DrumAPI/drum_idrumfactory.h \
     DrumEnum/drum_drumkithorizontalline.h \
-    DrumAPI/drum_drumexception.h \
     DrumEnum/drum_drumkit.h \
     DrumAPI/drum_drumline.h \
     DrumAPI/drum_drumtab.h \
@@ -43,6 +42,8 @@ HEADERS += \
     Tools/tools_stringfunction.h \
     Tools/tools_stringfunction_ext.h \
     Tools/tools_directory.h \
+    Tools/tools_threadsafedata.h \
+    Tools/tools_exception.h \
     UI/ui_rightleftpushbutton.h \
     UI/ui_directorylineedit.h
 

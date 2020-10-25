@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DrumAPI/drum_drumexception.h"
+#include "Tools/tools_exception.h"
 #include "Tools/tools_serializerhelper.h"
 #include "Tools/tools_directory.h"
 #include "Tools/tools_file.h"
@@ -173,9 +173,9 @@ namespace Drum
             // prepare the reading
             std::ifstream fileStream(file.c_str());
 
-            DrumException::drumAssert(static_cast<bool>(fileStream),
-                                      "Error from 'IDrumFactory::loadDrumTab': '{}' cannot be read.",
-                                      file);
+            Tools::Exception::Assert(static_cast<bool>(fileStream),
+                                     "Error from 'IDrumFactory::loadDrumTab': '{}' cannot be read.",
+                                     file);
 
             // returned drumtab
             auto returnedDrumTab = std::make_unique<FactoryObject>();

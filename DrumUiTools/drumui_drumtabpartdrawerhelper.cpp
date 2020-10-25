@@ -1,7 +1,7 @@
 #include "DrumUiTools/drumui_drumtabpartdrawerhelper.h"
 
 #include "DrumEnum/drum_drumkit.h"
-#include "DrumAPI/drum_drumexception.h"
+#include "Tools/tools_exception.h"
 #include "DrumAPI/drum_drumkithorizontallinehelper.h"
 #include <DrumAPI/drum_drumline.h>
 
@@ -40,8 +40,8 @@ const QRect &DrumTabPartDrawerHelper::getQRect(Drum::DrumKit drumKit, int positi
         index++;
     }
 
-    throw Drum::DrumException("Error from DrumTabPartDrawerHelper::getQRect: "
-                              "did not found a valid rectangle for position" + std::to_string(position));
+    throw Tools::Exception("Error from DrumTabPartDrawerHelper::getQRect: "
+                           "did not found a valid rectangle for position" + std::to_string(position));
 
 }
 
@@ -170,8 +170,9 @@ std::vector<Drum::DrumKit> DrumTabPartDrawerHelper::getDrumKits(int x, int y) co
          break;
      }
 
-     Drum::DrumException::drumAssert(assertAsked == false,"Error from DrumTabPartDrawerHelper::getDrumTabPartHorizontalLine: "
-                                                          "requested a line impossible to draw");
+     Tools::Exception::Assert(assertAsked == false,
+                              "Error from DrumTabPartDrawerHelper::getDrumTabPartHorizontalLine: "
+                              "requested a line impossible to draw");
 
      return QRect(x,y,width,height);
 

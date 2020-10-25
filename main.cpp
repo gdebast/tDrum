@@ -10,7 +10,6 @@ int main(int argc, char *argv[])
     DrumUI::DrumMainWindow mainWindow;
     mainWindow.show();
     int end =  a.exec();
-    mainWindow.end();
     return end;
 
 }

@@ -96,21 +96,22 @@ namespace DrumUI {
          */
         bool findIncompleteRow(std::pair<unsigned,unsigned> &incompleteRow_ColumnAtRow);
 
+        typedef std::map<DrumTabPartDisplayWidget*,std::pair<int,int>> DrumTabPartWidgetPositionMap;
 
         // model
         Drum::DrumTab* m_drumTabModel;
 
         // UI
-        int                                              m_columnNr{0};
-        int                                              m_rowNr{0};
-        QGridLayout                                     *m_mainGridLayout{nullptr};
-        DrumTabPartDisplayWidget                        *m_selectedDrumTabPartWidget{nullptr};
-        std::map<DrumTabPartDisplayWidget*,std::pair<int,int>>  m_DrumTabPartWidget;
-        QWidget                                         *m_drumTabWidgetInScrollingArea{nullptr};
-        QSpacerItem                                     *m_gridSpacerForIncompleteRow{nullptr};
+        int                            m_columnNr{0};
+        int                            m_rowNr{0};
+        QGridLayout                   *m_mainGridLayout{nullptr};
+        DrumTabPartDisplayWidget      *m_selectedDrumTabPartWidget{nullptr};
+        DrumTabPartWidgetPositionMap   m_DrumTabPartWidget;
+        QWidget                       *m_drumTabWidgetInScrollingArea{nullptr};
+        QSpacerItem                   *m_gridSpacerForIncompleteRow{nullptr};
 
         // garbage collections
-        std::vector<DrumTabPartDisplayWidget*>           m_removedDrumTabPartDisplayWidgets;
+        std::vector<DrumTabPartDisplayWidget*>               m_removedDrumTabPartDisplayWidgets;
 
 
 

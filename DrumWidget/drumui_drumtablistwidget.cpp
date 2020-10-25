@@ -2,7 +2,7 @@
 
 #include "DrumAPI/drum_drumtabfactory.h"
 #include "DrumAPI/drum_drumtab.h"
-#include "DrumAPI/drum_drumexception.h"
+#include "Tools/tools_exception.h"
 #include "DrumWidget/drumui_drumtabpartwidgetbase.h"
 
 #include <QHeaderView>
@@ -69,9 +69,9 @@ void DrumTabListWidget::drumTabTitleAuthorChanged(Drum::DrumTab &changedDrumTab)
 {
     auto it = m_drumTabButtonMap.find(&changedDrumTab);
     // assert if the list does not contain at least the add button
-    Drum::DrumException::drumAssert(it != m_drumTabButtonMap.end(),
-                                    "Error from DrumTabListWidget::deleteRow: "
-                                    "cannot find the pointer.");
+    Tools::Exception::Assert(it != m_drumTabButtonMap.end(),
+                             "Error from DrumTabListWidget::deleteRow: "
+                             "cannot find the pointer.");
 
 
     unsigned row = m_tableWidget->row(it->second.first);
@@ -97,15 +97,15 @@ void DrumTabListWidget::addRow(Drum::DrumTab *drumTab)
     }
 
     // assert if the drum tab is already a row
-    Drum::DrumException::drumAssert(m_drumTabButtonMap.find(drumTabInRow) == m_drumTabButtonMap.end(),
-                                    "Error from DrumTabListWidget::addRow: "
-                                    "trying to add an existing drum-tab part");
+    Tools::Exception::Assert(m_drumTabButtonMap.find(drumTabInRow) == m_drumTabButtonMap.end(),
+                            "Error from DrumTabListWidget::addRow: "
+                            "trying to add an existing drum-tab part");
 
 
     // assert if the list does not contain at least the add button
-    Drum::DrumException::drumAssert(m_tableWidget->rowCount() > 0,
-                                    "Error from DrumTabListWidget::addRow: "
-                                    "missing add button.");
+    Tools::Exception::Assert(m_tableWidget->rowCount() > 0,
+                             "Error from DrumTabListWidget::addRow: "
+                             "missing add button.");
 
     // add a row
     unsigned rowNumber(m_tableWidget->rowCount()-1);
@@ -148,9 +148,9 @@ void DrumTabListWidget::deleteRow(Drum::DrumTab &drumTab)
 {
     auto it = m_drumTabButtonMap.find(&drumTab);
     // assert if the list does not contain at least the add button
-    Drum::DrumException::drumAssert(it != m_drumTabButtonMap.end(),
-                                    "Error from DrumTabListWidget::deleteRow: "
-                                    "cannot find the pointer.");
+    Tools::Exception::Assert(it != m_drumTabButtonMap.end(),
+                             "Error from DrumTabListWidget::deleteRow: "
+                             "cannot find the pointer.");
 
     unsigned deletedRow(m_tableWidget->row(it->second.first));
     m_tableWidget->removeRow(deletedRow);
@@ -161,17 +161,17 @@ void DrumTabListWidget::deleteRow(Drum::DrumTab &drumTab)
     // assert that the number of object in the factory and the widget it the same
     unsigned factorySize = m_drumTabFactory.getNumberOfInstances();
     unsigned widgetSize = m_drumTabButtonMap.size();
-    Drum::DrumException::drumAssert(factorySize == widgetSize,
-                                    "Error from DrumTabListWidget::deleteRow: "
-                                    "factory and widget do not haver the same size."
-                                    "Measured {} and {}",factorySize,widgetSize);
+    Tools::Exception::Assert(factorySize == widgetSize,
+                             "Error from DrumTabListWidget::deleteRow: "
+                             "factory and widget do not haver the same size."
+                             "Measured {} and {}",factorySize,widgetSize);
 
     // assert that the number of row is positive because at least the add button exists
     int numberOfRow = m_tableWidget->rowCount();
-    Drum::DrumException::drumAssert(numberOfRow > 0,
-                                    "Error from DrumTabListWidget::deleteRow: "
-                                    "the number of remaining rows in not positive."
-                                    "Measured {}",numberOfRow);
+    Tools::Exception::Assert(numberOfRow > 0,
+                             "Error from DrumTabListWidget::deleteRow: "
+                             "the number of remaining rows in not positive."
+                             "Measured {}",numberOfRow);
 
     // set the focus to the closest upper item (deletedRow-1) if possible
     unsigned newSelectedRow(deletedRow > 0 ? deletedRow-1 : 0);

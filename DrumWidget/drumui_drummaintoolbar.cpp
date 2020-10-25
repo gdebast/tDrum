@@ -35,6 +35,9 @@ void DrumMainToolBar::setDrumTab(Drum::DrumTab *drumTab)
 
     m_qLineEdit_Author->setEnabled(m_drumTab);
     m_qLineEdit_Title->setEnabled(m_drumTab);
+
+    m_drumTabPdfCreator.setDrumTab(m_drumTab);
+
 }
 
 void DrumMainToolBar::createWidget()

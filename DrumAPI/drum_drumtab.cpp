@@ -1,6 +1,6 @@
 #include "DrumAPI/drum_drumtab.h"
 #include "DrumAPI/drum_drumtabpart.h"
-#include "DrumAPI/drum_drumexception.h"
+#include "Tools/tools_exception.h"
 #include "Tools/tools_serializerhelper_ext.h"
 
 #include "algorithm"
@@ -75,10 +75,10 @@ DrumTabPart* DrumTab::addDrumTabPart(unsigned index)
     // otherwise, it is impossible and means that the caller does not know where to put it.
     else
     {
-        DrumException::drumAssert(false,
-                                  "Error from 'DrumTab::addDrumTabPart': trying to add at index {} "
-                                  "which is more than the size.",
-                                  index);
+        Tools::Exception::Assert(false,
+                                 "Error from 'DrumTab::addDrumTabPart': trying to add at index {} "
+                                 "which is more than the size.",
+                                 index);
     }
 
     return newPart;
@@ -87,15 +87,15 @@ DrumTabPart* DrumTab::addDrumTabPart(unsigned index)
 void DrumTab::removeDrumTabPart(unsigned index)
 {
 
-    DrumException::drumAssert(index < m_drumTabParts.size(),
-                              "Error from 'DrumTab::removeDrumTabPart': cannot remove index {} "
-                              "when size is {}.",
-                              index,std::to_string(m_drumTabParts.size()));
+    Tools::Exception::Assert(index < m_drumTabParts.size(),
+                             "Error from 'DrumTab::removeDrumTabPart': cannot remove index {} "
+                             "when size is {}.",
+                             index,std::to_string(m_drumTabParts.size()));
 
-    DrumException::drumAssert(m_drumTabParts.find(index) != m_drumTabParts.end(),
-                              "Error from 'DrumTab::removeDrumTabPart': cannot remove index {} "
-                              "because it does not exist.",
-                              index);
+    Tools::Exception::Assert(m_drumTabParts.find(index) != m_drumTabParts.end(),
+                             "Error from 'DrumTab::removeDrumTabPart': cannot remove index {} "
+                             "because it does not exist.",
+                             index);
 
     delete m_drumTabParts[index].first;
 
@@ -167,10 +167,10 @@ std::string DrumTab::getSerialized() const
         auto it = m_drumTabParts.find(index);
 
         // assert if we cannot find the index
-        DrumException::drumAssert(it != m_drumTabParts.end(),
-                                  "Error from 'DrumTab::getSerialized' : index {} "
-                                  "is not contained in the tab.",
-                                  index);
+        Tools::Exception::Assert(it != m_drumTabParts.end(),
+                                 "Error from 'DrumTab::getSerialized' : index {} "
+                                 "is not contained in the tab.",
+                                 index);
 
         auto& currentDrumTabPartLinkHelper = drumTabPartsHelper.addSubSerializerHelper(std::to_string(index));
         auto& currentDrumTabPartHelper = currentDrumTabPartLinkHelper.addSubSerializerHelper(PART);

@@ -112,3 +112,8 @@ void DrumTabPdfCreator::createPdf()
 
 
 }
+
+void DrumTabPdfCreator::setDrumTab(const Drum::DrumTab *drumTab)
+{
+    m_drumTab = drumTab;
+}

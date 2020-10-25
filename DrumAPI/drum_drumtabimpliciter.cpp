@@ -1,7 +1,7 @@
 #include "DrumAPI/drum_drumtabimpliciter.h"
 
 #include "DrumAPI/drum_drumtabpart.h"
-#include "DrumAPI/drum_drumexception.h"
+#include "Tools/tools_exception.h"
 
 #include <list>
 
@@ -99,19 +99,19 @@ DrumTabImpliciter::getImplicit(const std::vector<std::pair<Drum::DrumTabPart *, 
         }
 
         // assert
-        DrumException::drumAssert(implicitPart_size == explicitPart_size,
+        Tools::Exception::Assert(implicitPart_size == explicitPart_size,
                                   "Error from 'DrumTabImpliciter::getImplicit' : "
                                   "the size of both explicit and implicit parts are different."
                                   "Got {} and {}.",
                                   implicitPart_size,
                                   explicitPart_size);
 
-        DrumException::drumAssert(currentTabToFollow.size() >= explicitPart_size,
-                                  "Error from 'DrumTabImpliciter::getImplicit' : "
-                                  "the size of currentTabToFollow is smaller than explicitPart."
-                                  "Got {} and {}.",
-                                  std::to_string(currentTabToFollow.size()),
-                                  explicitPart_size);
+        Tools::Exception::Assert(currentTabToFollow.size() >= explicitPart_size,
+                                 "Error from 'DrumTabImpliciter::getImplicit' : "
+                                 "the size of currentTabToFollow is smaller than explicitPart."
+                                 "Got {} and {}.",
+                                 std::to_string(currentTabToFollow.size()),
+                                 explicitPart_size);
 
 
         // treat the explicit and implicit part

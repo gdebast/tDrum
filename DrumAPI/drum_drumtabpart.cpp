@@ -1,6 +1,6 @@
 #include "DrumAPI/drum_drumtabpart.h"
 
-#include "DrumAPI/drum_drumexception.h"
+#include "Tools/tools_exception.h"
 #include "DrumAPI/drum_drumkithorizontallinehelper.h"
 #include "Tools/tools_serializerhelper_ext.h"
 
@@ -72,7 +72,7 @@ void DrumTabPart::addDrumKit(DrumKit drumKit, unsigned position)
     {
 
         auto drumKitStr = getSerializedDrumKit(drumKit);
-        throw DrumException("Error from 'Drum::DrumTabPart::addDrumKit': '" + drumKitStr
+        throw Exception("Error from 'Drum::DrumTabPart::addDrumKit': '" + drumKitStr
                             + "' has one or multiple DrumKitHorizontalLines. "
                             + std::to_string(lines.size()) + " found.");
     }
@@ -183,7 +183,7 @@ DrumKit DrumTabPart::getDrumKit(DrumKitHorizontalLine line, unsigned position) c
             {
 
                 auto drumKitStr = getSerializedDrumKit(kitPosition.second);
-                throw DrumException("Error from 'Drum::DrumTabPart::getDrumKit': '" + drumKitStr
+                throw Exception("Error from 'Drum::DrumTabPart::getDrumKit': '" + drumKitStr
                                     + "' has one or multiple DrumKitHorizontalLines. "
                                     + std::to_string(lines.size()) + " found.");
             }
@@ -441,7 +441,7 @@ DrumKit DrumTabPart::getDrumKit(const std::string& serializeddrumKit) const
 
     if(found == false)
     {
-        throw DrumException("Error from 'getDrumKit' : '" + serializeddrumKit
+        throw Exception("Error from 'getDrumKit' : '" + serializeddrumKit
                           + "' is not recognized as DrumKit.");
     }
 
@@ -468,7 +468,7 @@ std::string DrumTabPart::getSerializedDrumKit(DrumKit drumKit) const
 
     if(found == false)
     {
-        throw DrumException("Error from 'DrumTabPart::getSerialized' : impossible to find the Drumkit.");
+        throw Exception("Error from 'DrumTabPart::getSerialized' : impossible to find the Drumkit.");
     }
 
     return returnedSerialized;

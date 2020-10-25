@@ -29,6 +29,8 @@ namespace DrumUI
         ~DrumTabPdfCreator() = default;
 
         void createPdf();
+        void setDrumTab(const Drum::DrumTab *drumTab);
+
     private:
 
         const Drum::DrumTab                  *m_drumTab;

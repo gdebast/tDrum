@@ -39,8 +39,6 @@ namespace DrumUI
         explicit DrumMainWindow(QWidget *parent = nullptr);
         ~DrumMainWindow();
 
-        // method to be called when ending the program
-        void end();
 
     private:
 

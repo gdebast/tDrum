@@ -1,6 +1,6 @@
 #include "DrumAPI/drum_drumtabpdfprinterconfigfactory.h"
 
-#include "DrumAPI/drum_drumexception.h"
+#include "Tools/tools_exception.h"
 
 
 using namespace Drum;

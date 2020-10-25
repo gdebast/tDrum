@@ -27,14 +27,12 @@ DrumMainWindow::DrumMainWindow(QWidget *parent) : QMainWindow(parent)
 
 }
 
-void DrumMainWindow::end()
+DrumMainWindow::~DrumMainWindow()
 {
     m_drumTabFactory->dumpToFile();
     m_drumTabPartFactory->dumpToFile();
     m_drumTabPdfPrinterConfigFactory->dumpToFile();
 }
-
-DrumMainWindow::~DrumMainWindow() = default;
 
 
 void DrumMainWindow::createWidget()

@@ -3,7 +3,7 @@
 #include "DrumWidget/drumui_drumtabpartwidgetbase.h"
 
 #include "DrumAPI/drum_drumtab.h"
-#include "DrumAPI/drum_drumexception.h"
+#include "Tools/tools_exception.h"
 
 #include <cmath>
 
@@ -161,6 +161,7 @@ void DrumTabWidget::addDrumTabPartWidget(DrumTabPartDisplayWidget *sender, bool 
     }
 
 
+
     addDrumTabPartWidget(newRow,newColumn);
     computeLineNr();
     updateGridlayout();
@@ -175,7 +176,7 @@ void DrumTabWidget::removeDrumTabRow(DrumTabPartDisplayWidget *sender)
 
     // create a copy of the drum tab part widget with their position
     // to recreate it in the following loop
-    decltype(m_DrumTabPartWidget) newDrumTabPartWidget;
+    DrumTabPartWidgetPositionMap newDrumTabPartWidget;
 
     if (sender == m_selectedDrumTabPartWidget)
     {
@@ -183,10 +184,11 @@ void DrumTabWidget::removeDrumTabRow(DrumTabPartDisplayWidget *sender)
     }
 
     // assert if the model exist
-    Drum::DrumException::drumAssert(m_drumTabModel,
-                                    "Error from DrumTabWidget::removeDrumTabRow: "
-                                    "trying to remove a row of drum tab parts}."
-                                    "It is impossible since the model is nullptr.");
+    Tools::Exception::Assert(m_drumTabModel,
+                             "Error from DrumTabWidget::removeDrumTabRow: "
+                             "trying to remove a row of drum tab parts}."
+                             "It is impossible since the model is nullptr.");
+
 
     for(const auto& partPositionPair : m_DrumTabPartWidget)
     {
@@ -216,8 +218,8 @@ void DrumTabWidget::removeDrumTabRow(DrumTabPartDisplayWidget *sender)
         }
 
     }
-
     m_DrumTabPartWidget = std::move(newDrumTabPartWidget);
+
 
     m_rowNr--;
     updateGridlayout();
@@ -234,7 +236,7 @@ void DrumTabWidget::removeDrumTabPartWidget(DrumTabPartDisplayWidget *sender)
 
     // create a copy of the drum tab part widget with their position
     // to recreate it in the following loop
-    decltype(m_DrumTabPartWidget) newDrumTabPartWidget;
+    DrumTabPartWidgetPositionMap newDrumTabPartWidget;
 
     if (sender == m_selectedDrumTabPartWidget)
     {
@@ -242,10 +244,10 @@ void DrumTabWidget::removeDrumTabPartWidget(DrumTabPartDisplayWidget *sender)
     }
 
     // assert if the model exist
-    Drum::DrumException::drumAssert(m_drumTabModel,
-                                    "Error from DrumTabWidget::removeDrumTabPartWidget: "
-                                    "trying to remove a drum tab part."
-                                    "It is impossible since the model is nullptr.");
+    Tools::Exception::Assert(m_drumTabModel,
+                             "Error from DrumTabWidget::removeDrumTabPartWidget: "
+                             "trying to remove a drum tab part."
+                             "It is impossible since the model is nullptr.");
 
     for(const auto& [drumTabPartWidget,position] : m_DrumTabPartWidget)
     {
@@ -295,6 +297,7 @@ void DrumTabWidget::removeDrumTabPartWidget(DrumTabPartDisplayWidget *sender)
     }
 
     m_DrumTabPartWidget = std::move(newDrumTabPartWidget);
+
 
     computeLineNr();
     updateGridlayout();
@@ -400,14 +403,22 @@ void DrumTabWidget::addDrumTabPartWidget(int row,
     else
     {
         // assert if the model exist
-        Drum::DrumException::drumAssert(m_drumTabModel,
-                                        "Error from DrumTabWidget::addDrumTabPartWidget: "
-                                        "trying to create a drum tab part for row-column {},{}."
-                                        "It is impossible since the model is nullptr.",
-                                        row,column);
+        Tools::Exception::Assert(m_drumTabModel,
+                                 "Error from DrumTabWidget::addDrumTabPartWidget: "
+                                 "trying to create a drum tab part for row-column {},{}."
+                                 "It is impossible since the model is nullptr.",
+                                 row,column);
 
         DrumTabPart = m_drumTabModel->addDrumTabPart(column+m_columnNr*row); // add empty drum tab part
     }
+
+    // add a new drum tab part widget
+    auto *newDrumTabPartWidget = new DrumTabPartDisplayWidget(DrumTabPart,
+                                                              implicitDrawing,
+                                                              this);
+    // add connections
+    connectDrumTabPartWidget(newDrumTabPartWidget);
+
 
     // check that the row-column does not already exist
     bool rowColumnExist(false);   // the row should not exist yet
@@ -421,25 +432,20 @@ void DrumTabWidget::addDrumTabPartWidget(int row,
     }
 
     // assert if the drum tab exist
-    Drum::DrumException::drumAssert(drumTabPartExist == false,
-                                    "Error from DrumTabWidget::addDrumTabPartWidget: "
-                                    "trying to add an existing drum-tab part at position {},{}.",
-                                    row,column);
+    Tools::Exception::Assert(drumTabPartExist == false,
+                             "Error from DrumTabWidget::addDrumTabPartWidget: "
+                             "trying to add an existing drum-tab part at position {},{}.",
+                             row,column);
 
     // assert if the column-row is already taken
-    Drum::DrumException::drumAssert(rowColumnExist == false,
-                                    "Error from DrumTabWidget::addDrumTabPartWidget: "
-                                    "trying to add a drum-tab part in a already used position : {},{}.",
-                                    row,column);
+    Tools::Exception::Assert(rowColumnExist == false,
+                             "Error from DrumTabWidget::addDrumTabPartWidget: "
+                             "trying to add a drum-tab part in a already used position : {},{}.",
+                             row,column);
 
-    // add a new drum tab part widget
-    auto newDrumTabPartWidget = new DrumTabPartDisplayWidget(DrumTabPart,
-                                                             implicitDrawing,
-                                                             this);
     m_DrumTabPartWidget[newDrumTabPartWidget] = std::make_pair(row, column);
 
-    // connection
-    connectDrumTabPartWidget(newDrumTabPartWidget);
+
 
 
 
@@ -449,24 +455,22 @@ void DrumTabWidget::addDrumTabPartWidget(int row,
 
 std::pair<int,int> DrumTabWidget::getDrumTabPartWidgetRowColumn(DrumTabPartDisplayWidget *widget) const
 {
+
+    Tools::Exception::Assert(widget != nullptr, "Error from DrumTabWidget::getDrumTabPartWidgetRowColumn: "
+                                                "did not find the widget. The widget is nullptr.");
+
     auto it = m_DrumTabPartWidget.find(widget);
 
-    if(it == m_DrumTabPartWidget.end())
-    {
-        std::string nullptrMessage("");
-        if(widget == nullptr)
-        {
-            nullptrMessage= " The widget is nullptr.";
-        }
+    Tools::Exception::Assert(it != m_DrumTabPartWidget.end(), "Error from DrumTabWidget::getDrumTabPartWidgetRowColumn: "
+                                                              "did not find the widget.");
 
-        throw Drum::DrumException("Error from DrumTabWidget::getDrumTabPartWidgetRowColumn: "
-                                  "did not find the widget." + nullptrMessage);
-    }
     return it->second;
 }
 
 void DrumTabWidget::updateGridlayout()
 {
+
+
     // empty the layouts
     QLayoutItem *item;
     while ((item = m_mainGridLayout->takeAt(0)) != nullptr)
@@ -475,18 +479,19 @@ void DrumTabWidget::updateGridlayout()
     }
     m_gridSpacerForIncompleteRow = nullptr; // deleted with all items
 
+    // add the widgets
     // note : this function must be called after line nr and column nr have been updated
     for(const auto &[drumTabPartWidget,rowColumn] : m_DrumTabPartWidget)
     {
 
         // assert if the column-row is already taken
-        Drum::DrumException::drumAssert(rowColumn.first < m_rowNr && rowColumn.second < m_columnNr,
-                                        "Error from DrumTabWidget::updateGridlayout: "
-                                        "when lopping over drum tab parts, one of the parts "
-                                        "is at position ({},{}) while the maximum number of "
-                                        "rows and columns are {} and {}",
-                                        rowColumn.first,rowColumn.second,
-                                        m_rowNr,m_columnNr);
+        Tools::Exception::Assert(rowColumn.first < m_rowNr && rowColumn.second < m_columnNr,
+                                 "Error from DrumTabWidget::updateGridlayout: "
+                                 "when lopping over drum tab parts, one of the parts "
+                                 "is at position ({},{}) while the maximum number of "
+                                 "rows and columns are {} and {}",
+                                 rowColumn.first,rowColumn.second,
+                                 m_rowNr,m_columnNr);
 
         m_mainGridLayout->addWidget(drumTabPartWidget,
                                     rowColumn.first,
@@ -512,6 +517,7 @@ void DrumTabWidget::updateGridlayout()
 
 void DrumTabWidget::createWidgetsWithModel()
 {
+    // delete the widgets
     // empty the widget if they exist
     for (const auto &[widget,rowColumn] : m_DrumTabPartWidget)
     {
@@ -533,7 +539,6 @@ void DrumTabWidget::createWidgetsWithModel()
     {
         for (int column=0; column < m_columnNr; column++)
         {
-
             Drum::DrumTabPart* DrumTabPart{nullptr};
             bool implicitDrawing(false);
             if(index_drumTabParts < drumTabPartsImplicit.size())
@@ -541,12 +546,13 @@ void DrumTabWidget::createWidgetsWithModel()
                 DrumTabPart = drumTabPartsImplicit[index_drumTabParts].first;
                 implicitDrawing = drumTabPartsImplicit[index_drumTabParts].second;
             }
-
             addDrumTabPartWidget(line, column, DrumTabPart,implicitDrawing);
+
             index_drumTabParts++;
 
         }
     }
+
 }
 
 void DrumTabWidget::computeLineNr()
@@ -577,9 +583,9 @@ bool DrumTabWidget::findIncompleteRow(std::pair<unsigned, unsigned> &incompleteR
         if (nrbOfColumn != m_columnNr)
             incompleteRows.push_back(row);
     }
-    Drum::DrumException::drumAssert(incompleteRows.size() <= 1,
-                                    "Error from DrumTabWidget::findIncompleteRow: "
-                                    "there are more then one incomplete row.");
+    Tools::Exception::Assert(incompleteRows.size() <= 1,
+                             "Error from DrumTabWidget::findIncompleteRow: "
+                             "there are more then one incomplete row.");
 
     if (incompleteRows.size() == 1)
     {
