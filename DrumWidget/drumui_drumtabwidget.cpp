@@ -1,10 +1,12 @@
 #include "DrumWidget/drumui_drumtabwidget.h"
+
 #include "DrumWidget/drumui_drumtabpartdisplaywidget.h"
 #include "DrumWidget/drumui_drumtabpartwidgetbase.h"
-
+#include "DrumWidget/drumui_drumtabrownumberwidget.h"
 #include "DrumAPI/drum_drumtab.h"
 #include "Tools/tools_exception.h"
 
+#include <QKeyEvent>
 #include <cmath>
 
 using namespace DrumUI;
@@ -31,6 +33,9 @@ DrumTabWidget::DrumTabWidget(int columnNumber ,
     // must be at the end after all layout updates
     setWidget(m_drumTabWidgetInScrollingArea);
 
+    // focus is set when clicking
+    setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+
     // create the widget with the model
     createWidgetsWithModel();
 
@@ -48,9 +53,43 @@ void DrumTabWidget::setDrumTab(Drum::DrumTab *drumTabModel)
     updateGridlayout();
 }
 
-// =================
-// == Public SLOT ==
-// =================
+void DrumTabWidget::keyPressEvent(QKeyEvent *event)
+{
+
+    switch (event->key())
+    {
+        case Qt::Key_Control :
+            m_controlKeyIsPressed = true; // remember that the control key is pressed
+            break;
+        case Qt::Key_C :
+            if (m_controlKeyIsPressed && m_selectedDrumTabPartWidget)
+            {
+                const auto *copiedDrumTabPart = m_selectedDrumTabPartWidget->getDrumTabPart();
+                Tools::Exception::Assert(copiedDrumTabPart,"Error from 'keyPressEvent': the selected widget has a nullptr DrumTabPart.");
+                emit copyPressed(*copiedDrumTabPart);
+            }
+            break;
+        case Qt::Key_V :
+            if (m_controlKeyIsPressed && m_selectedDrumTabPartWidget)
+            {
+                emit pastePressed(m_selectedDrumTabPartWidget);
+            }
+            break;
+    }
+
+
+}
+
+void DrumTabWidget::keyReleaseEvent(QKeyEvent* event)
+{
+    switch (event->key())
+    {
+        case Qt::Key_Control :
+            m_controlKeyIsPressed = false;
+        break;
+    }
+
+}
 
 // change the selected drum-tab part widget from one to another
 void DrumTabWidget::updateSelectedDrumTabPartWidget(DrumTabPartDisplayWidget* newSelectedDrumTabPartWidget)
@@ -305,10 +344,6 @@ void DrumTabWidget::removeDrumTabPartWidget(DrumTabPartDisplayWidget *sender)
 
 }
 
-// =======================
-// == Private functions ==
-// =======================
-
 // function creating all connection for a tab-part widget
 void DrumTabWidget::connectDrumTabPartWidget(DrumTabPartDisplayWidget *widget)
 {
@@ -327,7 +362,7 @@ void DrumTabWidget::connectDrumTabPartWidget(DrumTabPartDisplayWidget *widget)
                      this,
                      [this](const Drum::DrumTabPart& drumTabPart)
                      {
-                        emit menuCopyPressed(drumTabPart);
+                        emit copyPressed(drumTabPart);
                      });
 
     // paste connection
@@ -335,7 +370,7 @@ void DrumTabWidget::connectDrumTabPartWidget(DrumTabPartDisplayWidget *widget)
                      this,
                      [this](DrumTabPartWidgetBase* widget)
                      {
-                        emit menuPastePressed(widget);
+                        emit pastePressed(widget);
                      });
 
 
@@ -393,6 +428,12 @@ void DrumTabWidget::addDrumTabPartWidget(int row,
                                          Drum::DrumTabPart *newPart,
                                          bool implicitDrawing)
 {
+    // assert if the row and column are positive or null
+    Tools::Exception::Assert(row >= 0 && column >= 0,
+                             "Error from DrumTabWidget::addDrumTabPartWidget: "
+                             "trying to create a drum tab part for row-column {},{}."
+                             "The column and row number should be positive or null.",
+                             row,column);
 
     Drum::DrumTabPart* DrumTabPart{nullptr};
     if(newPart)
@@ -409,7 +450,7 @@ void DrumTabWidget::addDrumTabPartWidget(int row,
                                  "It is impossible since the model is nullptr.",
                                  row,column);
 
-        DrumTabPart = m_drumTabModel->addDrumTabPart(column+m_columnNr*row); // add empty drum tab part
+        DrumTabPart = &m_drumTabModel->addDrumTabPart(column+m_columnNr*row); // add empty drum tab part
     }
 
     // add a new drum tab part widget
@@ -445,12 +486,6 @@ void DrumTabWidget::addDrumTabPartWidget(int row,
 
     m_DrumTabPartWidget[newDrumTabPartWidget] = std::make_pair(row, column);
 
-
-
-
-
-
-
 }
 
 std::pair<int,int> DrumTabWidget::getDrumTabPartWidgetRowColumn(DrumTabPartDisplayWidget *widget) const
@@ -478,6 +513,12 @@ void DrumTabWidget::updateGridlayout()
         delete item;
     }
     m_gridSpacerForIncompleteRow = nullptr; // deleted with all items
+    for (auto *widget : m_DrumTabRowNumberWidget)
+    {
+        widget->hide();
+        delete widget;
+    }
+    m_DrumTabRowNumberWidget.clear(); // all elements have been deleted
 
     // add the widgets
     // note : this function must be called after line nr and column nr have been updated
@@ -495,7 +536,18 @@ void DrumTabWidget::updateGridlayout()
 
         m_mainGridLayout->addWidget(drumTabPartWidget,
                                     rowColumn.first,
-                                    rowColumn.second);
+                                    rowColumn.second+1);
+    }
+
+    // add the numbers
+    for(int row(0); row <= m_rowNr; row++)
+    {
+        int displayedNumber = row*m_columnNr+1;
+        auto* newNumberWidget = new DrumTabRowNumberWidget(displayedNumber,1.0,this);
+        m_DrumTabRowNumberWidget.push_back(newNumberWidget);
+        m_mainGridLayout->addWidget(newNumberWidget,
+                                    row,
+                                    0);
     }
 
     // add a spacer at the end if the last row is incomplete
@@ -505,13 +557,13 @@ void DrumTabWidget::updateGridlayout()
         m_gridSpacerForIncompleteRow = new QSpacerItem(0,0, QSizePolicy::Expanding);
         m_mainGridLayout->addItem(m_gridSpacerForIncompleteRow,
                                   incompleteRow_columnAtRow.first,
-                                  incompleteRow_columnAtRow.second,
+                                  incompleteRow_columnAtRow.second+1,
                                   1,m_columnNr - incompleteRow_columnAtRow.second);
     }
 
 
 
-    m_drumTabWidgetInScrollingArea->resize(m_columnNr*DrumTabPartDisplayWidget::getFixedWidth(),
+    m_drumTabWidgetInScrollingArea->resize((m_columnNr+1)*DrumTabPartDisplayWidget::getFixedWidth(),
                                            m_rowNr*DrumTabPartDisplayWidget::getFixedHeight());
 }
 
@@ -525,12 +577,11 @@ void DrumTabWidget::createWidgetsWithModel()
     }
     m_selectedDrumTabPartWidget = nullptr;
     m_DrumTabPartWidget.clear();
+    computeLineNr();
 
     // do not continue if the model is nullptr
     if (m_drumTabModel == nullptr)
         return;
-
-    computeLineNr();
 
     // fill the widget
     auto drumTabPartsImplicit = m_drumTabModel->getDrumTabParts();
@@ -557,6 +608,12 @@ void DrumTabWidget::createWidgetsWithModel()
 
 void DrumTabWidget::computeLineNr()
 {
+    if (m_drumTabModel == nullptr)
+    {
+        m_rowNr = 0;
+        return;
+    }
+
     m_rowNr = static_cast<int>(std::ceil(static_cast<float>(m_drumTabModel->getDrumTabSize())/m_columnNr));
 }
 

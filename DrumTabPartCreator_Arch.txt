@@ -3,9 +3,6 @@
 		use setFocusPolicy(Qt::WheelFocus) in drumtabwidget
 		implement keyPressEvent and keyReleaseEvent and wheelEvent -> test with debugger that the code goes there
 		bool drumtabwidget::m_ctrlHold
-		
-	ctrl+c-ctrl+v
-	number of the head drumtabpart in front of each line
 
 4. draw silence in drum tab 
 

@@ -16,6 +16,7 @@ namespace Drum {
 namespace DrumUI {
     class DrumTabPartDisplayWidget;
     class DrumTabPartWidgetBase;
+    class DrumTabRowNumberWidget;
 }
 
 namespace DrumUI {
@@ -40,10 +41,14 @@ namespace DrumUI {
         void setDrumTab(Drum::DrumTab* drumTabModel);
 
     signals:
-        void menuCopyPressed(const Drum::DrumTabPart& copiedDrumTabPart);
-        void menuPastePressed(DrumTabPartWidgetBase* sender);
+        void copyPressed(const Drum::DrumTabPart& copiedDrumTabPart);
+        void pastePressed(DrumTabPartWidgetBase* sender);
 
     private:
+
+        // -- from QWidget
+        virtual void keyPressEvent(QKeyEvent *event) override final;
+        virtual void keyReleaseEvent(QKeyEvent *event) override final;
 
         // functions used in slots
         void addDrumTabPartRow(DrumTabPartDisplayWidget* sender,bool aboveBelow /*above=true,below=false*/);
@@ -102,13 +107,15 @@ namespace DrumUI {
         Drum::DrumTab* m_drumTabModel;
 
         // UI
-        int                            m_columnNr{0};
-        int                            m_rowNr{0};
-        QGridLayout                   *m_mainGridLayout{nullptr};
-        DrumTabPartDisplayWidget      *m_selectedDrumTabPartWidget{nullptr};
-        DrumTabPartWidgetPositionMap   m_DrumTabPartWidget;
-        QWidget                       *m_drumTabWidgetInScrollingArea{nullptr};
-        QSpacerItem                   *m_gridSpacerForIncompleteRow{nullptr};
+        int                                   m_columnNr{0}; // number of column of tab part widgets
+        int                                   m_rowNr{0};    // number of rows of tab part widgets
+        QGridLayout                          *m_mainGridLayout{nullptr};
+        DrumTabPartDisplayWidget             *m_selectedDrumTabPartWidget{nullptr};
+        DrumTabPartWidgetPositionMap          m_DrumTabPartWidget;
+        QWidget                              *m_drumTabWidgetInScrollingArea{nullptr};
+        QSpacerItem                          *m_gridSpacerForIncompleteRow{nullptr};
+        std::vector<DrumTabRowNumberWidget*>  m_DrumTabRowNumberWidget;
+        bool                                  m_controlKeyIsPressed{false};
 
         // garbage collections
         std::vector<DrumTabPartDisplayWidget*>               m_removedDrumTabPartDisplayWidgets;

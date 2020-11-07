@@ -25,7 +25,7 @@ namespace Drum {
         ~DrumTab();
 
         // function to interact with the DrumTab parts
-        DrumTabPart* addDrumTabPart(unsigned index);
+        DrumTabPart& addDrumTabPart(unsigned index);
         void removeDrumTabPart(unsigned drumTabPartNumber);
         void setImplicitExplicit(const DrumTabPart* part,
                                  bool implicitExplicit /*implicit=true, Explicit=false*/);

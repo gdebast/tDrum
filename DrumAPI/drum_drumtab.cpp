@@ -40,7 +40,7 @@ DrumTab::~DrumTab()
 // == Public Functions ==
 // ======================
 
-DrumTabPart* DrumTab::addDrumTabPart(unsigned index)
+DrumTabPart& DrumTab::addDrumTabPart(unsigned index)
 {
     DrumTabPart* newPart(nullptr);
 
@@ -81,7 +81,12 @@ DrumTabPart* DrumTab::addDrumTabPart(unsigned index)
                                  index);
     }
 
-    return newPart;
+    Tools::Exception::Assert(newPart,
+                             "Error from 'DrumTab::addDrumTabPart': trying to add at index {} "
+                             "but the returned reference does not exist.",
+                             index);
+
+    return *newPart;
 }
 
 void DrumTab::removeDrumTabPart(unsigned index)

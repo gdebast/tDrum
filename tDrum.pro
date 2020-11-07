@@ -33,6 +33,7 @@ HEADERS += \
     DrumWidget/drumui_drumtabpartwidgetbase.h \
     DrumWidget/drumui_drumtabpdfprinterconfigview.h \
     DrumWidget/drumui_drumtabpdfprinterconfigviewmodel.h \
+    DrumWidget/drumui_drumtabrownumberwidget.h \
     DrumWidget/drumui_drumtabwidget.h \
     DrumWidget/drumui_drummainwindow.h \
     Tools/tools_directorymanager.h \
@@ -70,6 +71,7 @@ SOURCES += \
     DrumWidget/drumui_drumtabpartwidgetbase.cpp \
     DrumWidget/drumui_drumtabpdfprinterconfigview.cpp \
     DrumWidget/drumui_drumtabpdfprinterconfigviewmodel.cpp \
+    DrumWidget/drumui_drumtabrownumberwidget.cpp \
     DrumWidget/drumui_drumtabwidget.cpp \
     DrumWidget/drumui_drummainwindow.cpp \
     Tools/tools_directorymanager.cpp \

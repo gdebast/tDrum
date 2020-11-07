@@ -108,7 +108,7 @@ void DrumMainWindow::connectWidget()
 
     // copy
     QObject::connect(m_drumTabWidget,
-                     &DrumTabWidget::menuCopyPressed,
+                     &DrumTabWidget::copyPressed,
                      this,
                      [this](const Drum::DrumTabPart &drumTabPart)
                      {
@@ -124,7 +124,7 @@ void DrumMainWindow::connectWidget()
                      });
     // paste
     QObject::connect(m_drumTabWidget,
-                     &DrumTabWidget::menuPastePressed,
+                     &DrumTabWidget::pastePressed,
                      this,
                      [this](DrumTabPartWidgetBase *sender)
                      {
