@@ -456,6 +456,7 @@ void DrumTabWidget::addDrumTabPartWidget(int row,
     // add a new drum tab part widget
     auto *newDrumTabPartWidget = new DrumTabPartDisplayWidget(DrumTabPart,
                                                               implicitDrawing,
+                                                              m_zoomFactor, /*zoom factor*/
                                                               this);
     // add connections
     connectDrumTabPartWidget(newDrumTabPartWidget);
@@ -540,10 +541,11 @@ void DrumTabWidget::updateGridlayout()
     }
 
     // add the numbers
+
     for(int row(0); row <= m_rowNr; row++)
     {
         int displayedNumber = row*m_columnNr+1;
-        auto* newNumberWidget = new DrumTabRowNumberWidget(displayedNumber,1.0,this);
+        auto* newNumberWidget = new DrumTabRowNumberWidget(displayedNumber,m_zoomFactor,this);
         m_DrumTabRowNumberWidget.push_back(newNumberWidget);
         m_mainGridLayout->addWidget(newNumberWidget,
                                     row,
@@ -561,10 +563,12 @@ void DrumTabWidget::updateGridlayout()
                                   1,m_columnNr - incompleteRow_columnAtRow.second);
     }
 
+    double displayDrumTabpartWidgetWidth(DrumTabPartDisplayWidget::getFixedWidth()*m_zoomFactor);
+    double displayDrumTabpartWidgetHeight(DrumTabPartDisplayWidget::getFixedHeight()*m_zoomFactor);
+    double displayNumberWidgetWidth(DrumTabPartDisplayWidget::getFixedWidth()*m_zoomFactor);
 
-
-    m_drumTabWidgetInScrollingArea->resize((m_columnNr+1)*DrumTabPartDisplayWidget::getFixedWidth(),
-                                           m_rowNr*DrumTabPartDisplayWidget::getFixedHeight());
+    m_drumTabWidgetInScrollingArea->resize(m_columnNr*displayDrumTabpartWidgetWidth + displayNumberWidgetWidth,
+                                           m_rowNr*displayDrumTabpartWidgetHeight);
 }
 
 void DrumTabWidget::createWidgetsWithModel()

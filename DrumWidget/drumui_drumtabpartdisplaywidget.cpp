@@ -13,10 +13,12 @@ using namespace DrumUI;
 
 DrumTabPartDisplayWidget::DrumTabPartDisplayWidget(Drum::DrumTabPart* drumTabPartModel,
                                                    bool implicitDrawing,
+                                                   double zoomFactor,
                                                    QWidget *parent)
     : DrumTabPartWidgetBase(drumTabPartModel,parent),
       m_selected(false),
-      m_implicitDrawing(implicitDrawing)
+      m_implicitDrawing(implicitDrawing),
+      m_zoomFactor(zoomFactor)
 {
 
     // add some menu item to the base class menu
@@ -101,6 +103,11 @@ void DrumTabPartDisplayWidget::paintEvent(QPaintEvent* e)
     // draw from DrumTabPartWidgetBase
     DrumTabPartWidgetBase::paintEvent(e);
 
+}
+
+QSize DrumTabPartDisplayWidget::sizeHint() const
+{
+    return QSize(m_zoomFactor*DrumTabPartWidgetBase::getFixedWidth(), m_zoomFactor*DrumTabPartWidgetBase::getFixedHeight());
 }
 
 // ===============================

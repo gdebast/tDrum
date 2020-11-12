@@ -22,6 +22,7 @@ namespace DrumUI{
     public:
         explicit DrumTabPartDisplayWidget(Drum::DrumTabPart* drumTabPartModel,
                                           bool implicitDrawing,
+                                          double zoomFactor,
                                           QWidget *parent = nullptr);
 
         DrumTabPartDisplayWidget(const DrumTabPartDisplayWidget&) = delete;
@@ -39,6 +40,7 @@ namespace DrumUI{
         virtual void mousePressEvent(QMouseEvent *event) override;
         // -- from DrumTabPartWidgetBase
         virtual void paintEvent(QPaintEvent* e) override;
+        virtual QSize sizeHint() const override final;
 
     signals:
         void selected(DrumTabPartDisplayWidget* selectedWidget);
@@ -59,6 +61,7 @@ namespace DrumUI{
         // UI
         bool     m_selected{false};
         bool     m_implicitDrawing{false};
+        double   m_zoomFactor{1.0};
         QAction *m_rightClickMenu_ExplicitImplicitToggle{nullptr};
         QAction *m_rightClickMenu_AddTabUnder{nullptr};
         QAction *m_rightClickMenu_AddTabOver{nullptr};

@@ -9,7 +9,7 @@ namespace DrumUI
     {
             Q_OBJECT
         public:
-            explicit DrumTabRowNumberWidget(unsigned displayedRowNumber, double zoomFactor = 1.0, QWidget *parent = nullptr);
+            explicit DrumTabRowNumberWidget(unsigned displayedRowNumber, double zoomFactor, QWidget *parent = nullptr);
 
         private:
             // -- from QWidget

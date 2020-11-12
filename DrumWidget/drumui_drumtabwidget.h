@@ -116,6 +116,7 @@ namespace DrumUI {
         QSpacerItem                          *m_gridSpacerForIncompleteRow{nullptr};
         std::vector<DrumTabRowNumberWidget*>  m_DrumTabRowNumberWidget;
         bool                                  m_controlKeyIsPressed{false};
+        double                                m_zoomFactor{1.2};
 
         // garbage collections
         std::vector<DrumTabPartDisplayWidget*>               m_removedDrumTabPartDisplayWidgets;
