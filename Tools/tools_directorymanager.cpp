@@ -13,9 +13,15 @@ DirectoryManager::DirectoryManager()
     initialize();
 }
 
-Directory &DirectoryManager::getWorkingDirectory()
+const Directory &DirectoryManager::getWorkingDirectory() const
 {
     return *m_workingDirectory;
+}
+
+bool DirectoryManager::isExistingDirectory(const std::string directoryStr) const
+{
+    boost::filesystem::path workingDirectoryPath(directoryStr);
+    return boost::filesystem::exists(workingDirectoryPath);
 }
 
 void DirectoryManager::initialize()

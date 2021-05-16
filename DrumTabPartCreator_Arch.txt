@@ -9,4 +9,11 @@
 5. change drumTabPart time in Creator
 
 6. play the written song
+	class Sound
+		addWave(IOscillator, IEnveloppe)
+		play(double time)
+	class IOscillator
+		getValue(double time) = 0;
+	class IOscillator
+		getValue(double time) = 0;
 

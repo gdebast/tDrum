@@ -37,7 +37,12 @@ void DrumTabPdfCreator::createPdf()
                                fileName.end(),
                                ' '),
                                fileName.end());
-    std::string fullPath =   m_drumTabPdfPrinterConfig.getPdfExportDirectory() + fileName;
+    std::string exportDirectory = m_drumTabPdfPrinterConfig.getPdfExportDirectory();
+    if (!exportDirectory.empty() && *exportDirectory.rbegin() != '/')
+    {
+        exportDirectory += '/';
+    }
+    std::string fullPath =   exportDirectory + fileName;
 
     // trimming
     const QString qStringfullPath(fullPath.c_str());

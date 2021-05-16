@@ -24,7 +24,10 @@ namespace Tools
             ~DirectoryManager();
 
             //return the working directory of the application
-            Directory& getWorkingDirectory();
+            const Directory& getWorkingDirectory() const;
+
+            //tells if a directory exists from a string
+            bool isExistingDirectory(const std::string directoryStr) const;
 
         private:
 

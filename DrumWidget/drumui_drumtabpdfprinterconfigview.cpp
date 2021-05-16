@@ -107,6 +107,8 @@ void DrumTabPdfPrinterConfigView::connectWidget()
                      this,
                      [this]()
                         {
+                            //TODO test if the directory exists. if not, block. use DirectorManager
+
                             m_viewModel.synchronizeModel();
                             close();
                         });
