@@ -410,7 +410,9 @@ const std::vector<std::pair<DrumKit,std::string>> DrumTabPart::s_stringDrumkitTr
 {
     std::make_pair<DrumKit,std::string>(DrumKit::BassDrum,"BassDrum"),
     std::make_pair<DrumKit,std::string>(DrumKit::FloorTom,"FloorTom"),
+    std::make_pair<DrumKit,std::string>(DrumKit::DoubleFloorTom,"DoubleFloorTom"),
     std::make_pair<DrumKit,std::string>(DrumKit::SnareTom,"SnareTom"),
+    std::make_pair<DrumKit,std::string>(DrumKit::DoubleSnareTom,"DoubleSnareTom"),
     std::make_pair<DrumKit,std::string>(DrumKit::LowTom,"LowTom"),
     std::make_pair<DrumKit,std::string>(DrumKit::HighTom,"HighTom"),
     std::make_pair<DrumKit,std::string>(DrumKit::HiHatClosed,"HiHatClosed"),

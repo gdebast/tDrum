@@ -8,7 +8,7 @@ namespace Drum  {
      */
 
     enum class DrumKit{
-        BassDrum,FloorTom,SnareTom,LowTom,HighTom,   // tom and drum
+        BassDrum,FloorTom,DoubleFloorTom,SnareTom,DoubleSnareTom,LowTom,HighTom,   // tom and drum
         HiHatClosed,HiHatOpened,Crash,Ride,RideBell,HitHatFloor, // cybal
         Silence                                      // none
     };

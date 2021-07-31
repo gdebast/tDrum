@@ -1,18 +1,29 @@
 #include "UI/ui_directorylineedit.h"
 
+#include <Tools/tools_directorymanager.h>
+
 #include <QFileDialog>
+
 
 using namespace UI;
 
-DirectoryLineEdit::DirectoryLineEdit(QString directory,
+DirectoryLineEdit::DirectoryLineEdit(const Tools::DirectoryManager& directoryManager,
+                                     QString directory,
                                      QWidget *parent) :
     QWidget(parent),
-    m_chosenDirectory(directory)
+    m_chosenDirectory(directory),
+    m_directoryManager(directoryManager)
 {
+    setChosenDirectory(directory);
     createWidget();
     createLayout();
     addWidgetToLayout();
     connectWidget();
+}
+
+bool DirectoryLineEdit::isDirectoryOk() const
+{
+    return m_isDirectoryOk;
 }
 
 void DirectoryLineEdit::createWidget()
@@ -41,7 +52,7 @@ void DirectoryLineEdit::connectWidget()
                      this,
                      [this](const QString& directory)
                      {
-                        m_chosenDirectory = directory;
+                        setChosenDirectory(directory);
                         emit directoryChanged(m_chosenDirectory);
                      });
 
@@ -50,11 +61,28 @@ void DirectoryLineEdit::connectWidget()
                      this,
                      [this]()
                      {
-                        m_chosenDirectory = openDirectoryDialog();
+                        setChosenDirectory(openDirectoryDialog());
                         m_qLineEdit->setText(m_chosenDirectory);
                         emit directoryChanged(m_chosenDirectory);
                      });
 
+}
+
+void DirectoryLineEdit::setChosenDirectory(const QString& chosenDirectory)
+{
+    m_chosenDirectory = chosenDirectory;
+    m_isDirectoryOk = m_directoryManager.isExistingDirectory(chosenDirectory.toStdString());
+    QPalette palette;
+
+    if(m_isDirectoryOk)
+    {
+        setStyleSheet("QLineEdit{background : transparent;}");
+    }
+    else
+    {
+        setStyleSheet("QLineEdit{background : red;}");
+    }
+    setPalette(palette);
 }
 
 QString DirectoryLineEdit::openDirectoryDialog()
@@ -64,6 +92,8 @@ QString DirectoryLineEdit::openDirectoryDialog()
                                                           m_chosenDirectory);
     if(directory == "")
         directory = m_chosenDirectory;
+    if(*directory.rbegin() != '/')
+        directory+='/';
 
     return directory;
 }

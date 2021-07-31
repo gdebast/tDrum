@@ -5,10 +5,16 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 
+namespace  Tools
+{
+    class DirectoryManager;
+}
+
 namespace UI
 {
     class DirectoryLineEdit : public QWidget
     {
+
         /*
          * Widget used to get Directory. It contains a QLineEdit and a button to open
          * a dialog allowing to choose a directory.
@@ -16,7 +22,12 @@ namespace UI
 
         Q_OBJECT
         public:
-            explicit DirectoryLineEdit(QString directory = "", QWidget *parent = nullptr);
+            explicit DirectoryLineEdit(const Tools::DirectoryManager& directoryManager,
+                                       QString directory = "",
+                                       QWidget *parent = nullptr);
+
+            // tells if the chosen directory is ok
+            bool isDirectoryOk() const;
 
         signals:
             void directoryChanged(QString directory);
@@ -26,6 +37,7 @@ namespace UI
             void createLayout();
             void addWidgetToLayout();
             void connectWidget();
+            void setChosenDirectory(const QString& chosenDirectory);
             QString openDirectoryDialog();
 
             QString m_chosenDirectory;
@@ -33,6 +45,10 @@ namespace UI
             QLineEdit*   m_qLineEdit{nullptr};
             QPushButton* m_qPushButton{nullptr};
             QHBoxLayout* m_mainLayout{nullptr};
+
+            bool m_isDirectoryOk{false};
+
+            const Tools::DirectoryManager &m_directoryManager;
 
     };
 }

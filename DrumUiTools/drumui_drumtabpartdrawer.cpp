@@ -127,8 +127,30 @@ void DrumTabPartDrawer::drawTom(int xCenter,
 
     painter.drawEllipse(QPoint(xCenter,
                                line-geo.getLineSpacing()/2),
-                        geo.getDrumKitXsize()/2,
-                        geo.getLineSpacing()/2);
+                               geo.getDrumKitXsize()/2,
+                               geo.getLineSpacing()/2);
+
+}
+
+void DrumTabPartDrawer::drawDoubleTom(int xCenter,
+                                      int line,
+                                      const DrumTabPartDrawerHelper &helper,
+                                      QPainter& painter) const
+{
+    painter.setPen(Qt::black);
+    painter.setBrush(Qt::black);
+    const auto& geo = helper.getDrumTabPartGeometry();
+
+    //bottom ellipse
+    painter.drawEllipse(QPoint(xCenter,
+                               line-geo.getLineSpacing()/4),
+                               geo.getDrumKitXsize()/2,
+                               geo.getLineSpacing()/4);
+    //top  ellipse
+    painter.drawEllipse(QPoint(xCenter,
+                               line-3*geo.getLineSpacing()/4),
+                               geo.getDrumKitXsize()/2,
+                               geo.getLineSpacing()/4);
 
 }
 
@@ -141,7 +163,7 @@ void DrumTabPartDrawer::drawCymbal(int xCenter,
     painter.setBrush(Qt::black);
     const auto& geo = helper.getDrumTabPartGeometry();
 
-    // draw the rect from up to bottom
+    // draw the rect from up to bottom. the \ of the cross
     int x1 = xCenter-geo.getDrumKitXsize()/2;
     int y1 = line-geo.getLineSpacing();
     int x2 = xCenter+geo.getDrumKitXsize()/2;
@@ -350,12 +372,20 @@ void DrumTabPartDrawer::drawDrumKit(Drum::DrumKit drumKit,
         drawTom(xCenter,rectWhereToDraw.bottom(),helper,painter);
         drawBottomLine(xCenter,rectWhereToDraw.bottom(),helper,painter);
         break;
+    case Drum::DrumKit::DoubleFloorTom :
+        drawDoubleTom(xCenter,rectWhereToDraw.bottom(),helper,painter);
+        drawUpperLine(xCenter,rectWhereToDraw.bottom(),helper,painter);
+        break;
     case Drum::DrumKit::FloorTom :
         drawTom(xCenter,rectWhereToDraw.bottom(),helper,painter);
         drawUpperLine(xCenter,rectWhereToDraw.bottom(),helper,painter);
         break;
     case Drum::DrumKit::SnareTom :
         drawTom(xCenter,rectWhereToDraw.bottom(),helper,painter);
+        drawUpperLine(xCenter,rectWhereToDraw.bottom(),helper,painter);
+        break;
+    case Drum::DrumKit::DoubleSnareTom :
+        drawDoubleTom(xCenter,rectWhereToDraw.bottom(),helper,painter);
         drawUpperLine(xCenter,rectWhereToDraw.bottom(),helper,painter);
         break;
     case Drum::DrumKit::HiHatClosed :

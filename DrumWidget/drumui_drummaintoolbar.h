@@ -18,6 +18,11 @@ namespace  UI
     class RightLeftPushButton;
 }
 
+namespace  Tools
+{
+    class DirectoryManager;
+}
+
 namespace DrumUI
 {
 
@@ -27,6 +32,7 @@ namespace DrumUI
         public:
             explicit DrumMainToolBar(Drum::DrumTab *drumTab, // can be nullprt
                                      Drum::DrumTabPdfPrinterConfig& pdfConfig,
+                                     const Tools::DirectoryManager& directoryManager,
                                      QWidget *parent = nullptr);
 
             void setDrumTab (Drum::DrumTab* drumTab);
@@ -51,6 +57,8 @@ namespace DrumUI
             Drum::DrumTab*                 m_drumTab;
             Drum::DrumTabPdfPrinterConfig& m_drumTabPdfPrinterConfig;
             DrumTabPdfCreator              m_drumTabPdfCreator;
+
+            const Tools::DirectoryManager& m_directoryManager;
 
 
     };

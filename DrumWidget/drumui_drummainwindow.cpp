@@ -59,7 +59,7 @@ void DrumMainWindow::createWidget()
     m_tabWidget = new QWidget(m_mainWidget);
     m_creatorWidget = new QWidget(m_mainWidget);
     m_drumTabWidget = new DrumTabWidget(4,&drumTab,m_tabWidget);
-    m_drumMainToolBar = new DrumMainToolBar(&drumTab,drumTabPdfPrinterConfig,m_tabWidget);
+    m_drumMainToolBar = new DrumMainToolBar(&drumTab,drumTabPdfPrinterConfig,*m_directoryManager,m_tabWidget);
     m_drumTabPartCreatorWidget = new DrumTabPartCreatorWidget(drumtabPart,m_creatorWidget);
     m_drumTabListWidget = new DrumTabListWidget(*m_drumTabFactory,m_creatorWidget);
     setCentralWidget(m_mainWidget);

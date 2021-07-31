@@ -19,6 +19,11 @@ namespace  DrumUI
     class DrumTabPdfPrinterConfigViewModel;
 }
 
+namespace  Tools
+{
+    class DirectoryManager;
+}
+
 namespace  DrumUI
 {
     /*
@@ -30,6 +35,7 @@ namespace  DrumUI
         Q_OBJECT
         public:
             explicit DrumTabPdfPrinterConfigView(DrumTabPdfPrinterConfigViewModel& viewModel,
+                                                 const Tools::DirectoryManager& directoryManager,
                                                  QWidget *parent = nullptr);
 
         private:
@@ -38,6 +44,10 @@ namespace  DrumUI
             void createLayout();
             void addWidgetToLayout();
             void connectWidget();
+
+            // actions done when click on teh ok button
+            // the returned bool tells if we can copy to the model
+            bool onClickOk();
 
             DrumTabPdfPrinterConfigViewModel& m_viewModel;
 
@@ -49,6 +59,8 @@ namespace  DrumUI
             QComboBox*             m_qComboBox_NumberOfPartPerRow{nullptr};
             QLabel*                m_qLabel_NumberOfPartPerRow{nullptr};
             QStandardItemModel*    m_qStandardItemModel_NumberOfPartPerRow{nullptr};
+
+            const Tools::DirectoryManager &m_directoryManager;
 
 
     };

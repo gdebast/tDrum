@@ -60,6 +60,9 @@ std::vector<std::pair<DrumKit,DrumKitHorizontalLine>> DrumKitHorizontalLineHelpe
                 DrumKit::SnareTom,
                 DrumKitHorizontalLine::SnareTomLine),
     std::make_pair<DrumKit,DrumKitHorizontalLine>(
+                DrumKit::DoubleSnareTom,
+                DrumKitHorizontalLine::SnareTomLine),
+    std::make_pair<DrumKit,DrumKitHorizontalLine>(
                 DrumKit::Silence,
                 DrumKitHorizontalLine::SnareTomLine),
 
@@ -91,6 +94,9 @@ std::vector<std::pair<DrumKit,DrumKitHorizontalLine>> DrumKitHorizontalLineHelpe
     // floor tom line
     std::make_pair<DrumKit,DrumKitHorizontalLine>(
                 DrumKit::FloorTom,
+                DrumKitHorizontalLine::FloorTomLine),
+    std::make_pair<DrumKit,DrumKitHorizontalLine>(
+                DrumKit::DoubleFloorTom,
                 DrumKitHorizontalLine::FloorTomLine),
     std::make_pair<DrumKit,DrumKitHorizontalLine>(
                 DrumKit::Silence,

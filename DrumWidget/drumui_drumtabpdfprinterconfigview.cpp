@@ -8,9 +8,11 @@
 using namespace DrumUI;
 
 DrumTabPdfPrinterConfigView::DrumTabPdfPrinterConfigView(DrumTabPdfPrinterConfigViewModel& viewModel,
+                                                         const Tools::DirectoryManager& directoryManager,
                                                          QWidget *parent) :
     QDialog(parent),
-    m_viewModel(viewModel)
+    m_viewModel(viewModel),
+    m_directoryManager(directoryManager)
 {
     createWidget();
     createLayout();
@@ -32,7 +34,7 @@ void DrumTabPdfPrinterConfigView::createWidget()
         m_explicitImplicitCheckBox->setCheckState(Qt::CheckState::Unchecked);
 
     // export directory
-    m_directoryLineEdit = new UI::DirectoryLineEdit(m_viewModel.getPdfExportDirectory(),this);
+    m_directoryLineEdit = new UI::DirectoryLineEdit(m_directoryManager,m_viewModel.getPdfExportDirectory(),this);
 
     // number of parts per row
     m_qComboBox_NumberOfPartPerRow = new QComboBox(this);
@@ -107,9 +109,17 @@ void DrumTabPdfPrinterConfigView::connectWidget()
                      this,
                      [this]()
                         {
-                            //TODO test if the directory exists. if not, block. use DirectorManager
+                            if(onClickOk())
+                            {
+                                m_viewModel.synchronizeModel();
+                                close();
+                            }
 
-                            m_viewModel.synchronizeModel();
-                            close();
-                        });
+    });
+}
+
+bool DrumTabPdfPrinterConfigView::onClickOk()
+{
+    // check export directory
+    return m_directoryLineEdit->isDirectoryOk();
 }

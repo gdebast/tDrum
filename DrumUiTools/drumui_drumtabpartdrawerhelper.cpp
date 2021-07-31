@@ -98,7 +98,7 @@ std::vector<Drum::DrumKit> DrumTabPartDrawerHelper::getDrumKits(int x, int y) co
  }
 
  Drum::DrumKitHorizontalLine DrumTabPartDrawerHelper::getDrumKitHorizontalLine(int x,
-                                                                                       int y) const
+                                                                               int y) const
  {
 
      for(const auto& combination : m_drumKitPositionQRect)
@@ -287,7 +287,7 @@ void DrumTabPartDrawerHelper::recompute(const QRect& drawingArea,
         // in this logic, each drum kit can be in a specific rectangle
         // for each position. The silence can be at every position.
 
-        // make the crash rectangle : crah, ride and ride-bell
+        // make the crash rectangle : crash, ride and ride-bell
         QRect rect(rectUpperLeftCornerX,
                    m_drumTabPartGeometry.getCrashLine()-rectHeight + m_drawingAreaQRect.y(),
                    rectWidth,rectHeight);

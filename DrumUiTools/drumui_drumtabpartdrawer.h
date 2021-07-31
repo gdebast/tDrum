@@ -74,11 +74,13 @@ namespace DrumUI
             void drawUnderscoredCircledCymbal(int xCenter, int line, const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
             void drawUnderscoredCymbal(int xCenter, int line,const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
             void drawTom(int xCenter, int line, const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
+            void drawDoubleTom(int xCenter, int line, const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
             void drawBell(int xCenter, int line, const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
             void drawUnderscoredBell(int xCenter, int line, const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
             void drawBottomLine(int xCenter, int line, const DrumTabPartDrawerHelper& helper, QPainter& painter, bool shift = true) const;
             void drawUpperLine(int xCenter, int line, const DrumTabPartDrawerHelper& helper, QPainter& painter, bool shift = true) const;
             void drawDrumLines(Drum::DrumTabPart& drumTabPart, const DrumTabPartDrawerHelper& helper, QPainter& painter) const;
+
 
             // members
             QPaintDevice&      m_deviceToPaint;

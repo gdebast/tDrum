@@ -10,11 +10,13 @@ using namespace DrumUI;
 
 DrumMainToolBar::DrumMainToolBar(Drum::DrumTab *drumTab,
                                  Drum::DrumTabPdfPrinterConfig& pdfConfig,
+                                 const Tools::DirectoryManager& directoryManager,
                                  QWidget *parent) :
     QWidget(parent),
     m_drumTab(drumTab),
     m_drumTabPdfPrinterConfig(pdfConfig),
-    m_drumTabPdfCreator(drumTab,pdfConfig)
+    m_drumTabPdfCreator(drumTab,pdfConfig),
+    m_directoryManager(directoryManager)
 {
     createWidget();
     setDrumTab(drumTab);
@@ -127,7 +129,7 @@ void DrumMainToolBar::editDrumTabPdfPrinterConfig()
     DrumTabPdfPrinterConfigViewModel viewModel(m_drumTabPdfPrinterConfig);
 
     // create the view
-    DrumTabPdfPrinterConfigView view(viewModel,this);
+    DrumTabPdfPrinterConfigView view(viewModel,m_directoryManager,this);
     view.move(mapToGlobal(QPoint(m_rightLeftPushButton_exportToPdf->x(),m_rightLeftPushButton_exportToPdf->y())));
     view.exec();
 }
