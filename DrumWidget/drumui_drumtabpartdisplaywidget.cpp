@@ -26,6 +26,7 @@ DrumTabPartDisplayWidget::DrumTabPartDisplayWidget(Drum::DrumTabPart* drumTabPar
     auto *addTabLineSection = m_rightClickMenu->addMenu("tab line");
     m_rightClickMenu_AddTabOver = addTabLineSection->addAction("add above");
     m_rightClickMenu_AddTabUnder = addTabLineSection->addAction("add below");
+    m_rightClickMenu_AddMultipleTabUnder = addTabLineSection->addAction("add 5 below");
     m_rightClickMenu_RemoveTabLine = addTabLineSection->addAction("remove");
     auto *addTabPartSection = m_rightClickMenu->addMenu("tab part");
     m_rightClickMenu_AddTabPartLeft = addTabPartSection->addAction("add left");
@@ -35,6 +36,7 @@ DrumTabPartDisplayWidget::DrumTabPartDisplayWidget(Drum::DrumTabPart* drumTabPar
     // connection
     QObject::connect(m_rightClickMenu_AddTabOver,&QAction::triggered,this,[this](){emit menuAddTabLinePressed(this,true);});
     QObject::connect(m_rightClickMenu_AddTabUnder,&QAction::triggered,this,[this](){emit menuAddTabLinePressed(this,false);});
+    QObject::connect(m_rightClickMenu_AddMultipleTabUnder,&QAction::triggered,this,[this](){emit menuAddMultipleTabLinesPressed(this,5);});
     QObject::connect(m_rightClickMenu_RemoveTabLine,&QAction::triggered,this,[this](){emit menuRemoveTabLinePressed(this);});
     QObject::connect(m_rightClickMenu_ExplicitImplicitToggle,&QAction::triggered,this,[this](){emit explicitImplicitToggled(this);});
     QObject::connect(m_rightClickMenu_AddTabPartLeft,&QAction::triggered,this,[this](){emit menuAddTabPartPressed(this,true);});

@@ -46,6 +46,7 @@ namespace DrumUI{
         void selected(DrumTabPartDisplayWidget* selectedWidget);
         void explicitImplicitToggled(DrumTabPartDisplayWidget* selectedWidget);
         void menuAddTabLinePressed(DrumTabPartDisplayWidget* sender,bool aboveBelow); //Above = true, Below=false
+        void menuAddMultipleTabLinesPressed(DrumTabPartDisplayWidget* sender,unsigned nrbOfLine);
         void menuRemoveTabLinePressed(DrumTabPartDisplayWidget* sender);
         void menuAddTabPartPressed(DrumTabPartDisplayWidget* sender,bool leftRight); //Left = true, Right=false
         void menuRemoveTabPartPressed(DrumTabPartDisplayWidget* sender);
@@ -64,6 +65,7 @@ namespace DrumUI{
         double   m_zoomFactor{1.0};
         QAction *m_rightClickMenu_ExplicitImplicitToggle{nullptr};
         QAction *m_rightClickMenu_AddTabUnder{nullptr};
+        QAction *m_rightClickMenu_AddMultipleTabUnder{nullptr};
         QAction *m_rightClickMenu_AddTabOver{nullptr};
         QAction *m_rightClickMenu_RemoveTabLine{nullptr};
         QAction *m_rightClickMenu_AddTabPartLeft{nullptr};

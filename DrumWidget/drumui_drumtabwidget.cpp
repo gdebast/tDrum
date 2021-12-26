@@ -374,13 +374,25 @@ void DrumTabWidget::connectDrumTabPartWidget(DrumTabPartDisplayWidget *widget)
                      });
 
 
-    // add above below connection
+    // add-above/below connection
     QObject::connect(widget,
                      &DrumTabPartDisplayWidget::menuAddTabLinePressed,
                      this,
                      [this](DrumTabPartDisplayWidget* sender,bool aboveBelow)
                      {
                         addDrumTabPartRow(sender,aboveBelow);
+                     });
+
+    // add-multiple-below connection
+    QObject::connect(widget,
+                     &DrumTabPartDisplayWidget::menuAddMultipleTabLinesPressed,
+                     this,
+                     [this](DrumTabPartDisplayWidget* sender,unsigned nbrOfLines)
+                     {
+                        for (unsigned i=0;i<nbrOfLines;i++)
+                        {
+                            addDrumTabPartRow(sender,false);
+                        }
                      });
 
     // remove connection
